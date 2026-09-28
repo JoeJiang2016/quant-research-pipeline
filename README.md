@@ -127,3 +127,9 @@ The historical Yahoo files under `C:\Projects\backtest_app\data` remain historic
 A strategy universe defines which assets are eligible; it does not bind the strategy to the symbol selected by a research experiment. Historical strategies retain the exact-symbol list form (`universe: [DEMO]`). New strategy versions may use the machine-readable asset-class form, for example `universe: {mode: asset_class, asset_class: equity, country: US}`. Compatibility is checked centrally against the dataset manifest's symbol or explicit `asset_class` and `country`, plus timeframe, and returns explainable reasons for every mismatch.
 
 This lets one immutable `US equity / 1d` strategy version be evaluated by separate experiments selecting AAPL, MSFT, NVDA, or another explicitly classified dataset. It avoids creating ticker-specific copies of identical strategy behavior. Eligibility alone is not evidence of performance and does not run or approve a backtest.
+
+## Fixed IS/OOS evaluation boundaries
+
+Research experiments execute `evaluation.in_sample` and `evaluation.out_of_sample` as two independent runs rather than descriptive metadata. Both use `boundary_mode: flat_start`: initial equity is reset, and positions, pending entries, and pending exits never cross the boundary. Bars before a segment remain readable only as causal indicator warmup; the engine does not traverse them for signals, fills, trades, or P&L. A signal before OOS therefore cannot fill on its first bar. Equity curves and trade logs contain active evaluation bars only.
+
+IS and OOS summaries are factual and separate. Comparability is established within a segment only when dataset checksum, timeframe, dates, and effective canonical strategy costs match. IS and OOS are never treated as one performance sample, and the baseline output does not rank, select, approve, or modify strategies.

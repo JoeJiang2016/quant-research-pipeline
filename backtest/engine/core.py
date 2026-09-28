@@ -13,14 +13,20 @@ def atr(bars, index, period):
 
 def _fill(price, side, bps): return price * (1 + (bps / 10000 if side == "buy" else -bps / 10000))
 
-def run(strategy, bars):
+def run(strategy, bars, *, evaluation_start=0, evaluation_end=None):
     e, x, r, ex = strategy["entry"], strategy["exit"], strategy["risk"], strategy["execution"]
     signal_logic = get_strategy_logic(strategy)
     minimum = max(signal_logic.minimum_history(strategy), x["atr_period"]) + 2
     if len(bars) < minimum:
         raise ValueError(f"insufficient history: need at least {minimum} bars")
+    evaluation_end = len(bars) - 1 if evaluation_end is None else evaluation_end
+    if not 0 <= evaluation_start <= evaluation_end < len(bars):
+        raise ValueError("invalid evaluation boundaries")
     equity=r["initial_equity"]; cash=equity; position=None; pending=None; pending_exit=None; trades=[]; curve=[]; commissions=slippage=0.0
-    for i, bar in enumerate(bars):
+    # State starts flat at the active boundary. Earlier bars remain readable by
+    # indicator functions but are never traversed for signals, fills, or P&L.
+    for i in range(evaluation_start, evaluation_end + 1):
+        bar = bars[i]
         exited_this_bar = False
         if pending_exit == i and position is not None:
             long=position["side"]=="long"; raw=bar["open"]; fill=_fill(raw,"sell" if long else "buy",ex["slippage_bps"])
@@ -41,14 +47,14 @@ def run(strategy, bars):
                 raw=position["stop"] if stop_hit else position["target"]; reason="stop" if stop_hit else "take_profit"; fill=_fill(raw, "sell" if long else "buy", ex["slippage_bps"])
                 pnl=(fill-position["entry"])*position["qty"]*(1 if long else -1); commission=ex["commission_per_trade"]; cash+=pnl-commission; equity=cash; commissions+=commission; slippage+=abs(fill-raw)*position["qty"]
                 trades.append({"signal_time":position["signal_time"],"entry_time":position["entry_time"],"exit_time":bar["timestamp"],"side":position["side"],"quantity":position["qty"],"entry_price":position["entry"],"exit_price":fill,"exit_reason":reason,"pnl":pnl-(2*commission),"commission":2*ex["commission_per_trade"]}); position=None; exited_this_bar = True
-        if position is not None and pending_exit is None and i+1 < len(bars):
+        if position is not None and pending_exit is None and i + 1 <= evaluation_end:
             exit_logic=getattr(signal_logic,"evaluate_exit",None)
             if exit_logic and exit_logic(strategy,bars,i,position): pending_exit=i+1
         # Strategy logic only evaluates the close signal. The shared engine owns all state and execution.
         if position is None and pending is None and not exited_this_bar and i >= max(signal_logic.minimum_history(strategy), x["atr_period"]):
             a=atr(bars,i,x["atr_period"])
             signal=signal_logic.evaluate_entry(strategy,bars,i)
-            if signal and i+1 < len(bars): pending={"execute_index":i+1,"atr":a,"signal_time":bar["timestamp"]}
+            if signal and i + 1 <= evaluation_end: pending={"execute_index":i+1,"atr":a,"signal_time":bar["timestamp"]}
         marked= cash if not position else cash + (bar["close"]-position["entry"])*position["qty"]*(1 if position["side"]=="long" else -1)
         curve.append({"timestamp":bar["timestamp"],"equity":marked})
     return {"trades":trades,"equity_curve":curve,"commission":commissions,"slippage":slippage}

@@ -3,8 +3,8 @@
   "schema_version": "1.0.0",
   "purpose": "Canonical repository entry point for Meta Muse research hypotheses expressed only as candidate strategy files.",
   "strategy_schema_path": "schemas/strategy.schema.json",
-  "candidate_example_path": "strategies/candidates/demo_breakout.yaml",
-  "candidate_output_directory": "strategies/candidates",
+  "candidate_example_path": "strategies/breakout_001/v1.0.0/strategy.yaml",
+  "candidate_output_directory": "strategies",
   "allowed_status": ["candidate"],
   "required_output_format": {
     "format": "YAML",

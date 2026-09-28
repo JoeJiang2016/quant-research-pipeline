@@ -40,7 +40,7 @@ def test_stitched_curve_is_oos_only_and_ordered():
 def test_synthetic_demo_has_deterministic_oos_trade_and_no_is_output(tmp_path):
     path=tmp_path/"demo_test_data.csv"; synthetic_demo(path); first=path.read_bytes(); synthetic_demo(path); assert path.read_bytes() == first
     bars=load_dataset(path,symbol="DEMO",timeframe="1d"); folds=build_folds(len(bars),train_bars=28,test_bars=24)
-    oos_results=[run(__import__("yaml").safe_load(Path("strategies/candidates/demo_breakout.yaml").read_text()),bars[f.test_start:f.test_end]) for f in folds]
+    oos_results=[run(__import__("yaml").safe_load(Path("strategies/breakout_001/v1.0.0/strategy.yaml").read_text()),bars[f.test_start:f.test_end]) for f in folds]
     trades=[trade for result in oos_results for trade in result["trades"]]
     assert trades and all(bars[folds[0].test_start]["timestamp"] <= trade["entry_time"] for trade in trades)
     assert [f.fold_id for f in folds] == ["fold_001","fold_002"]
@@ -48,7 +48,7 @@ def test_synthetic_demo_has_deterministic_oos_trade_and_no_is_output(tmp_path):
     assert {point["timestamp"] for point in stitched}.issubset({bar["timestamp"] for f in folds for bar in bars[f.test_start:f.test_end]})
 
 def test_higher_costs_do_not_improve_deterministic_net_result(tmp_path):
-    path=tmp_path/"demo_test_data.csv"; synthetic_demo(path); bars=load_dataset(path,symbol="DEMO",timeframe="1d"); strategy=__import__("yaml").safe_load(Path("strategies/candidates/demo_breakout.yaml").read_text()); oos=bars[28:52]
+    path=tmp_path/"demo_test_data.csv"; synthetic_demo(path); bars=load_dataset(path,symbol="DEMO",timeframe="1d"); strategy=__import__("yaml").safe_load(Path("strategies/breakout_001/v1.0.0/strategy.yaml").read_text()); oos=bars[28:52]
     base=metrics(run(strategy,oos),strategy["risk"]["initial_equity"])["total_return"]
     higher_commission=copy.deepcopy(strategy); higher_commission["execution"]["commission_per_trade"]*=2
     higher_slippage=copy.deepcopy(strategy); higher_slippage["execution"]["slippage_bps"]*=2

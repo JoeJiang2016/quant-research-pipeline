@@ -21,7 +21,7 @@ def test_muse_canonical_entry_is_valid_and_references_existing_paths():
     assert schema.is_file()
     assert example.is_file()
     assert output_directory.is_dir()
-    assert output_directory == example.parent
+    assert example.is_relative_to(output_directory)
 
     strategy_schema = json.loads(schema.read_text(encoding="utf-8"))
     assert strategy_schema["properties"]["status"]["const"] == "candidate"

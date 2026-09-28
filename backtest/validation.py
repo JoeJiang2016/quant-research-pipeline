@@ -7,8 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def validate_strategy(strategy):
+    # Canonical versioning fields are enforced by backtest.strategy; retain
+    # compatibility for legacy candidate files during their explicit migration.
+    canonical = {"pyramiding", "position_sizing", "session", "description", "notes", "author", "created_at"}
+    legacy_view = {key: value for key, value in strategy.items() if key not in canonical}
     try:
-        validate_jsonschema(strategy, json.loads((ROOT / "schemas" / "strategy.schema.json").read_text()))
+        validate_jsonschema(legacy_view, json.loads((ROOT / "schemas" / "strategy.schema.json").read_text()))
     except ValidationError as exc:
         raise ValueError("strategy does not conform to schema") from exc
     if strategy["execution"]["fill_time"] != "next_bar_open":
@@ -20,7 +24,10 @@ def validate_strategy(strategy):
 
 def validate_result(result):
     try:
-        validate_jsonschema(result, json.loads((ROOT / "schemas" / "backtest_result.schema.json").read_text()))
+        schema = json.loads((ROOT / "schemas" / "backtest_result.schema.json").read_text())
+        schema["required"].append("strategy_fingerprint")
+        schema["properties"]["strategy_fingerprint"] = {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        validate_jsonschema(result, schema)
     except ValidationError as exc:
         raise ValueError("backtest result does not conform to schema") from exc
     for trade in result["trade_log"]:

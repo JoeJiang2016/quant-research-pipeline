@@ -8,6 +8,7 @@ import yaml
 from backtest.datasets import create_manifest, load_dataset, write_manifest
 from backtest.engine.core import metrics, run
 from backtest.validation import validate_strategy
+from backtest.strategy import load_strategy, fingerprint
 from backtest.walk_forward import build_folds, stitched_oos_equity
 
 def synthetic_demo(path, rows=80):
@@ -29,7 +30,7 @@ def synthetic_demo(path, rows=80):
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--strategy",required=True); ap.add_argument("--dataset",default=str(ROOT/"data/processed/demo_breakout_trades.synthetic.csv")); ap.add_argument("--train-bars",type=int,default=28); ap.add_argument("--test-bars",type=int,default=24); ap.add_argument("--anchored",action="store_true")
     args=ap.parse_args(); dataset=Path(args.dataset); synthetic_demo(dataset)
-    strategy=yaml.safe_load(Path(args.strategy).read_text()); validate_strategy(strategy)
+    strategy=load_strategy(args.strategy)
     bars=load_dataset(dataset,symbol=strategy["universe"][0],timeframe=strategy["timeframe"])
     manifest=create_manifest(dataset,dataset_id="DEMO_1D_synthetic_v1",symbol="DEMO",timeframe=strategy["timeframe"],timezone="UTC",source="synthetic/demo",price_adjustment="unknown")
     target=ROOT/"reports/walk_forward"/strategy["strategy_id"]; (target/"folds").mkdir(parents=True,exist_ok=True); write_manifest(target/"manifest.json",manifest)
@@ -38,7 +39,7 @@ def main():
     for fold in folds:
         # OOS run starts at its boundary; fixed parameters and no future bars are supplied.
         oos=bars[fold.test_start:fold.test_end]; result=run(strategy,oos); result_metrics=metrics(result,strategy["risk"]["initial_equity"])
-        payload={"fold_id":fold.fold_id,"train_start":bars[fold.train_start]["timestamp"],"train_end":bars[fold.train_end-1]["timestamp"],"test_start":oos[0]["timestamp"],"test_end":oos[-1]["timestamp"],"strategy_version":strategy["strategy_version"],"dataset_version":manifest["version"],"metrics":result_metrics,"trade_log":result["trades"],"warnings":["price_adjustment is unknown; results are not adjusted-action assumptions"]}
+        payload={"fold_id":fold.fold_id,"strategy_id":strategy["strategy_id"],"strategy_version":strategy["strategy_version"],"strategy_fingerprint":fingerprint(strategy),"train_start":bars[fold.train_start]["timestamp"],"train_end":bars[fold.train_end-1]["timestamp"],"test_start":oos[0]["timestamp"],"test_end":oos[-1]["timestamp"],"dataset_version":manifest["version"],"metrics":result_metrics,"trade_log":result["trades"],"warnings":["price_adjustment is unknown; results are not adjusted-action assumptions"]}
         (target/"folds"/(fold.fold_id+".json")).write_text(json.dumps(payload,indent=2)+"\n"); fold_results.append(payload); curves.append(result["equity_curve"])
     stitched=stitched_oos_equity(curves); stitched_trades=[trade for fold in fold_results for trade in fold["trade_log"]]
     for fold in fold_results:

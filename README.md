@@ -13,7 +13,7 @@ Candidate YAML in `strategies/candidates/` is validated, then evaluated by the d
 Install the two development dependencies, then run:
 
 ```powershell
-python scripts/run_backtest.py strategies/candidates/demo_breakout.yaml
+python scripts/run_backtest.py strategies/breakout_001/v1.0.0/strategy.yaml
 ```
 
 It uses 20 completed bars of history: `close > prior 20-bar high` signals a long order for next-open execution, with a 2-ATR stop, 4-ATR target, and 1% equity risk sizing.
@@ -49,7 +49,23 @@ Walk-forward windows are deterministic rolling or expanding (`--anchored`) bound
 Run the offline synthetic demo (it creates clearly labeled deterministic synthetic data locally):
 
 ```powershell
-python scripts/run_walk_forward.py --strategy strategies/candidates/demo_breakout.yaml --dataset data/processed/demo.csv
+python scripts/run_walk_forward.py --strategy strategies/breakout_001/v1.0.0/strategy.yaml --dataset data/processed/demo.csv
 ```
 
 It writes `manifest.json`, per-fold reports, `walk_forward_summary.json`, `stitched_oos_equity.json`, and `cost_sensitivity.json` below `reports/walk_forward/demo_20bar_breakout/`. Meta Muse remains a future candidate producer only; TradeStation and all paper/live trading remain unconnected.
+
+## Strategy lifecycle
+
+`strategy.yaml` is the canonical machine-readable source of every trading behavior parameter. Versions live at `strategies/<strategy_id>/vMAJOR.MINOR.PATCH/strategy.yaml`; historical version files are immutable and must be rerun from their own path. Create a new version instead of editing an existing version.
+
+`strategy_fingerprint` is a deterministic SHA-256 of behavior fields (universe, timeframe, entry, exits, risk, pyramiding, sizing, session, execution costs and assumptions). Descriptions and other metadata do not change it. Every single-run result records the strategy id, version, fingerprint, parameter snapshot, code commit, and data checksum.
+
+The migrated demo is `strategies/breakout_001/v1.0.0/strategy.yaml`:
+
+```powershell
+python scripts/run_backtest.py strategies/breakout_001/v1.0.0/strategy.yaml
+python scripts/run_walk_forward.py --strategy strategies/breakout_001/v1.0.0/strategy.yaml
+python scripts/compare_strategy_versions.py strategies/breakout_001/v1.0.0/strategy.yaml strategies/breakout_001/v1.1.0/strategy.yaml
+```
+
+Future Muse candidates may add a new strategy family and new candidate version only; they cannot overwrite historical versions, results, approvals, or produce trading instructions.

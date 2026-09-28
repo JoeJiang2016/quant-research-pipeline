@@ -101,7 +101,7 @@ def test_split_is_deterministic_and_oos_cannot_include_training_bars():
 
 
 def test_result_schema_and_trade_log_invariants_reject_invalid_result():
-    result = {"strategy_id":"x", "strategy_version":"1", "dataset_id":"d", "period":{"start":"2024-01-01", "end":"2024-01-02"}, "metrics":{"trades":0,"total_return":0,"commission":0,"slippage":0}, "equity_curve":[{"timestamp":"2024-01-01","equity":1}], "trade_log":[], "parameter_snapshot":{}, "execution_assumptions":{"signal_time":"bar_close","fill_time":"next_bar_open","same_bar_stop_target":"stop_first"}, "reproducibility":{"git_commit":"abc", "data_version":"d.csv", "data_checksum_sha256":"a"*64, "timestamp":"2024-01-01T00:00:00+00:00", "engine_version":"1"}}
+    result = {"strategy_id":"x", "strategy_version":"1", "strategy_fingerprint":"b"*64, "dataset_id":"d", "period":{"start":"2024-01-01", "end":"2024-01-02"}, "metrics":{"trades":0,"total_return":0,"commission":0,"slippage":0}, "equity_curve":[{"timestamp":"2024-01-01","equity":1}], "trade_log":[], "parameter_snapshot":{}, "execution_assumptions":{"signal_time":"bar_close","fill_time":"next_bar_open","same_bar_stop_target":"stop_first"}, "reproducibility":{"git_commit":"abc", "data_version":"d.csv", "data_checksum_sha256":"a"*64, "timestamp":"2024-01-01T00:00:00+00:00", "engine_version":"1"}}
     validate_result(result)
     result["trade_log"] = [{"signal_time":"2024-01-02", "entry_time":"2024-01-01", "exit_time":"2024-01-01", "side":"long", "quantity":1, "entry_price":1, "exit_price":1, "exit_reason":"stop", "pnl":0, "commission":0}]
     with pytest.raises(ValueError): validate_result(result)

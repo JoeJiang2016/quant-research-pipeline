@@ -81,3 +81,31 @@ python scripts/run_candidate_batch.py
 ```
 
 The batch writes a provenance manifest, one standard result per candidate, and a factual `candidate_summary.json` below `reports/candidates/<batch_id>/`. The candidates currently use different deterministic smoke-test datasets, so `comparable_performance` is false. These synthetic results validate implementation, engine integration, reproducibility, and provenance only; they do not demonstrate market efficacy and must not be used to select or promote a strategy.
+
+## Research Experiment Layer
+
+A strategy, dataset, and experiment are separate immutable inputs:
+
+```text
+Immutable Strategy Version
++ Immutable Dataset Version
++ Research Experiment Spec
+→ Deterministic Research Run
+```
+
+Strategy YAML contains trading behavior. Dataset manifests contain data identity and provenance. Experiment YAML selects one dataset, immutable strategy versions, research/IS/OOS windows, walk-forward settings, and cost scenarios. Dataset and experiment changes therefore do not change a strategy behavior fingerprint; experiments have their own fingerprint.
+
+Run the sample shared-dataset experiment after importing its deterministic fixture:
+
+```powershell
+python scripts/import_dataset.py --input data/demo_ohlcv.csv --dataset-id phase3a_shared_demo --version 1 --symbol DEMO --timeframe 1d --timezone UTC --source synthetic/integration --price-adjustment unknown --session-policy all_sessions --asset-class synthetic
+python scripts/run_research_experiment.py research/experiments/batch1_baseline.yaml
+```
+
+All candidates in one experiment use the same processed checksum, research window, timeframe, and baseline cost scenario before `comparable_performance` may be true. This permits factual side-by-side research output but does not rank, select, or promote strategies.
+
+## Real Data Intake
+
+`backtest/datasets.py` is the canonical historical dataset contract. `backtest/data.py` remains only as a compatibility loader for historical six-column demos. The provider-agnostic importer copies the source into immutable `data/raw/`, applies only explicit column mappings and timezone configuration, validates without repairing data, writes UTC seven-column OHLCV to `data/processed/`, and records checksums, mapping, timezone, session policy, adjustment status, and quality observations in `data/manifests/`.
+
+Alternative source columns must be mapped explicitly, for example `--map timestamp=Date --map open=Open`. Naive timestamps require `--timezone`; bars are never filled or forward-filled. Large gaps are reported without assuming weekends or holidays are missing market bars. No real-data provider has been selected or connected in Phase 3A.

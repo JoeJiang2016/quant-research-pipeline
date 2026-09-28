@@ -1,4 +1,8 @@
-"""Strict, deterministic OHLCV loading and identity helpers."""
+"""Legacy six-column demo compatibility loader.
+
+New historical data intake and research experiments must use
+``backtest.datasets``: it is the sole canonical seven-column data contract.
+"""
 import csv
 import hashlib
 from datetime import datetime

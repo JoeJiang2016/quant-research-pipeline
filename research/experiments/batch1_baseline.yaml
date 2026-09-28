@@ -1,0 +1,19 @@
+experiment_id: batch1_baseline
+experiment_version: "1.0.0"
+description: Shared deterministic integration dataset for software validation only.
+dataset:
+  dataset_id: phase3a_shared_demo
+  manifest_path: data/manifests/phase3a_shared_demo_v1.json
+strategies:
+  - {strategy_id: breakout_trend_001, strategy_version: "0.1.0"}
+  - {strategy_id: pullback_trend_001, strategy_version: "0.1.0"}
+  - {strategy_id: mean_reversion_001, strategy_version: "0.1.0"}
+research_window: {start: "2023-01-01T00:00:00Z", end: "2023-02-03T00:00:00Z"}
+evaluation:
+  in_sample: {start: "2023-01-01T00:00:00Z", end: "2023-01-20T00:00:00Z"}
+  out_of_sample: {start: "2023-01-21T00:00:00Z", end: "2023-02-03T00:00:00Z"}
+walk_forward: {enabled: false, train_bars: 20, test_bars: 10, step_bars: 10}
+cost_sensitivity:
+  enabled: false
+  scenarios:
+    - {name: baseline, commission_multiplier: 1.0, slippage_multiplier: 1.0}

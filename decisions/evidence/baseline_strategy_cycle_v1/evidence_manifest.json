@@ -1,0 +1,106 @@
+{
+  "packet_id": "baseline_strategy_cycle_v1",
+  "packet_version": "1.0.0",
+  "research_cycle_state": "awaiting_human_research_director_decision",
+  "generation_mode": "existing_artifact_read_only",
+  "new_evaluation_executed": false,
+  "strategy_yaml_modified": false,
+  "automatic_state_transition": false,
+  "strategies": {
+    "breakout_trend_001": {
+      "version": "0.2.0",
+      "fingerprint": "546931f68ca652e24e73da177b08084452ce3183f51d9b17446f39940c52c577",
+      "evidence_card": "decisions/evidence/baseline_strategy_cycle_v1/breakout_trend_001.md"
+    },
+    "pullback_trend_001": {
+      "version": "0.2.0",
+      "fingerprint": "fa3d18708ee6605cbe644ee580b06d0edb872f454bcb06e04cfd922632db4ac3",
+      "evidence_card": "decisions/evidence/baseline_strategy_cycle_v1/pullback_trend_001.md"
+    },
+    "mean_reversion_001": {
+      "version": "0.2.0",
+      "fingerprint": "fd60a50a0d1ac3b4181b48e3e07ec03325ded150f2294c4b5c037596fc0e2ab0",
+      "evidence_card": "decisions/evidence/baseline_strategy_cycle_v1/mean_reversion_001.md"
+    }
+  },
+  "research_phases": [
+    {
+      "phase": "3C-2",
+      "git_commit": "8e17e67335be",
+      "dataset_or_cohort": "AAPL / aapl_1d_yf_adjusted v2",
+      "evaluation_type": "fixed IS/OOS",
+      "artifacts": [{
+        "path": "reports/experiments/aapl_real_baseline_v1/8e17e67335be-a56a26ac4c50/baseline_summary.json",
+        "sha256": "060c44c1234ba5fd25404bedbf6a84d5ca185d2058aa5c9ae06096e0a328e706"
+      }]
+    },
+    {
+      "phase": "3C-3",
+      "git_commit": "9c9a1a1bd034",
+      "dataset_or_cohort": "AAPL / aapl_1d_yf_adjusted v2",
+      "evaluation_type": "fixed-parameter cost sensitivity and rolling OOS",
+      "artifacts": [
+        {"path": "reports/robustness/aapl_v0_2_0/9c9a1a1bd034-aa3ba9ad71c7/robustness_manifest.json", "sha256": "35658dc7b9f1093e6dd40497be5dc80af9a3a3e492ebd053c32c646cd20af5d2"},
+        {"path": "reports/robustness/aapl_v0_2_0/9c9a1a1bd034-aa3ba9ad71c7/cost_sensitivity.json", "sha256": "a48c1f0a5c33867e19650ad117b25b2376e93caf6960788e268b93df6fbf9dcb"},
+        {"path": "reports/robustness/aapl_v0_2_0/9c9a1a1bd034-aa3ba9ad71c7/rolling_oos_summary.json", "sha256": "9e7551c1948f9d378d74db80560eb829073662b376b13b1c2d1b2624b60a7223"}
+      ]
+    },
+    {
+      "phase": "3D-1",
+      "git_commit": "1bac426973b8",
+      "dataset_or_cohort": "pilot_v1: AAPL, MSFT, GOOGL, AMZN, NVDA",
+      "evaluation_type": "five-symbol fixed IS/OOS",
+      "artifacts": [
+        {"path": "reports/cross_symbol/pilot_v1/1bac426973b8-4d2528161508/cross_symbol_summary.json", "sha256": "8db933670b2280213a9028065c32072338155c9a6641e5c9e2c247aacf2b49d8"},
+        {"path": "reports/cross_symbol/pilot_v1/1bac426973b8-4d2528161508/manifest.json", "sha256": "0c2131b937562edf5a30319b6321dce4c62db0cb45316770ea5f632126f4ab7a"}
+      ]
+    },
+    {
+      "phase": "3D-2",
+      "git_commit": "e013ad8b72f7",
+      "dataset_or_cohort": "pilot_v1: AAPL, MSFT, GOOGL, AMZN, NVDA",
+      "evaluation_type": "five-symbol rolling OOS",
+      "artifacts": [
+        {"path": "reports/cross_symbol/pilot_rolling_v1/e013ad8b72f7-c31d99bc514e/aggregate_summary.json", "sha256": "ec6a61e4389e72b02ec5ecede5963010bde39f3036bb02f4a82f58d5e288b005"},
+        {"path": "reports/cross_symbol/pilot_rolling_v1/e013ad8b72f7-c31d99bc514e/manifest.json", "sha256": "553a255551a7758761a8c85ef6b8e523d3b45d3b726e2447d9b44fc5ecb77d49"}
+      ]
+    },
+    {
+      "phase": "3D-3",
+      "git_commit": "aa4bfd3705e0",
+      "dataset_or_cohort": "us_equity_holdout_v1: 30 precommitted symbols, 28 valid, 2 insufficient-history",
+      "evaluation_type": "first precommitted performance-blind symbol holdout fixed IS/OOS",
+      "holdout_status": "pristine_at_execution_then_revealed",
+      "artifacts": [
+        {"path": "reports/cross_symbol/holdout_v1/aa4bfd3705e0-fa121e043750/holdout_summary.json", "sha256": "cd11703fc4ab3bd47e85e3534a2cb10ed2028cccd5ba534e0f27598b8f568606"},
+        {"path": "reports/cross_symbol/holdout_v1/aa4bfd3705e0-fa121e043750/manifest.json", "sha256": "644a35423f1dc342393599214929d3e18f0c049beb8032e0edbb8d3029354c82"}
+      ]
+    },
+    {
+      "phase": "3D-4",
+      "git_commit": "193cf54ea037",
+      "dataset_or_cohort": "us_equity_holdout_v1: same 28 valid symbols; CTVA and SOLV retained as insufficient-history",
+      "evaluation_type": "fixed-parameter rolling OOS after Phase 3D-3 reveal",
+      "holdout_status": "revealed_holdout_after_3d3",
+      "artifacts": [
+        {"path": "reports/cross_symbol/holdout_rolling_v1/193cf54ea037-fa121e043750/aggregate_summary.json", "sha256": "670982dc7c5243f594c2799744edc807f35f89ffa7190e6039cb77d47613dda3"},
+        {"path": "reports/cross_symbol/holdout_rolling_v1/193cf54ea037-fa121e043750/manifest.json", "sha256": "1babfb2f799ed30e934ff87eb4a3e46336f0566c02752902f8de9b9fd18f1ca4"}
+      ]
+    }
+  ],
+  "holdout_consumption": {
+    "resource": "us_equity_holdout_v1",
+    "consumed_by": "Phase 3D-3",
+    "phase3d4_status": "revealed_holdout_after_3d3",
+    "may_be_called_pristine_for_tuned_descendant": false,
+    "governance_document": "decisions/RESEARCH_GOVERNANCE.md"
+  },
+  "human_decision": {
+    "required": true,
+    "decision_record": "decisions/baseline_strategy_cycle_v1_decision.md",
+    "decision": null,
+    "decision_date": null,
+    "allowed_next_action": null,
+    "forbidden_next_action": null
+  }
+}

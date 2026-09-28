@@ -1,7 +1,7 @@
 import copy, csv, json
 from pathlib import Path
 import pytest, yaml
-from backtest.datasets import import_dataset
+from backtest.datasets import OHLC_ABSOLUTE_TOLERANCE, import_dataset
 from backtest.experiments import comparable_performance, experiment_fingerprint, load_experiment
 from backtest.strategy import fingerprint, load_strategy
 from scripts.run_research_experiment import run_experiment
@@ -18,7 +18,8 @@ def source(path, rows=None, headers=None):
 def imported(tmp_path, **overrides):
     mapping={"timestamp":"Date","open":"Open","high":"High","low":"Low","close":"Close","volume":"Volume"}
     options=dict(dataset_id="fixture",version="1",symbol="DEMO",timeframe="1d",source_timezone="UTC",source="test",column_mapping=mapping,output_root=tmp_path/"data")
-    options.update(overrides); return import_dataset(source(tmp_path/"input.csv"),**options)
+    rows=overrides.pop("rows",None); options.update(overrides)
+    return import_dataset(source(tmp_path/"input.csv",rows=rows),**options)
 
 def test_experiment_schema_and_fingerprint_independence():
     experiment=load_experiment(SAMPLE); assert experiment_fingerprint(experiment)==experiment_fingerprint(copy.deepcopy(experiment))
@@ -38,6 +39,52 @@ def test_canonical_import_mapping_timezone_checksums_and_raw_immutability(tmp_pa
 
 def test_naive_timestamp_requires_timezone(tmp_path):
     with pytest.raises(ValueError,match="timezone"): imported(tmp_path,source_timezone=None)
+
+@pytest.mark.parametrize("timeframe", ["1d", "1wk"])
+def test_daily_and_weekly_session_dates_remain_date_only(tmp_path,timeframe):
+    result=imported(tmp_path,timeframe=timeframe,source_timezone=None,
+                    timestamp_semantics="session_date",price_adjustment="unknown")
+    rows=list(csv.DictReader(result["processed_path"].open()))
+    assert rows[0]["timestamp"]=="2024-01-01"
+    assert result["manifest"]["timestamp_semantics"]=="session_date"
+    assert result["manifest"]["source_timezone"] is None
+    assert result["manifest"]["canonical_timezone"] is None
+    assert result["manifest"]["price_adjustment"]=="unknown"
+
+def test_intraday_naive_timestamp_still_requires_timezone(tmp_path):
+    with pytest.raises(ValueError,match="timezone"):
+        imported(tmp_path,timeframe="1h",source_timezone=None,
+                 timestamp_semantics="instant")
+    with pytest.raises(ValueError,match="daily or weekly"):
+        imported(tmp_path,timeframe="1h",source_timezone=None,
+                 timestamp_semantics="session_date")
+
+def test_source_without_symbol_requires_explicit_symbol_metadata(tmp_path):
+    with pytest.raises(ValueError,match="explicit symbol"):
+        imported(tmp_path,symbol=None,timestamp_semantics="session_date",
+                 source_timezone=None)
+
+def test_session_date_reimport_is_deterministic_and_preserves_raw(tmp_path):
+    input_path=source(tmp_path/"input.csv"); original=input_path.read_bytes()
+    mapping={"timestamp":"Date","open":"Open","high":"High","low":"Low","close":"Close","volume":"Volume"}
+    options=dict(dataset_id="fixture",version="1",symbol="AAPL",timeframe="1d",
+                 source_timezone=None,timestamp_semantics="session_date",source="test",
+                 price_adjustment="unknown",column_mapping=mapping,output_root=tmp_path/"data")
+    first=import_dataset(input_path,**options); second=import_dataset(input_path,**options)
+    assert input_path.read_bytes()==original==first["raw_path"].read_bytes()
+    assert first["manifest"]["processed_file_sha256"]==second["manifest"]["processed_file_sha256"]
+    assert first["manifest"]["raw_file_sha256"]==second["manifest"]["raw_file_sha256"]
+
+def test_precision_only_ohlc_noise_is_tolerated_but_real_error_fails(tmp_path):
+    assert OHLC_ABSOLUTE_TOLERANCE==1e-12
+    precision=[["2024-01-01",10.3,10.2999999999995,10.0,10.3,1]]
+    result=imported(tmp_path,rows=precision,timestamp_semantics="session_date",
+                    source_timezone=None)
+    assert result["manifest"]["row_count"]==1
+    invalid=[["2024-01-01",10.3,10.29,10.0,10.3,1]]
+    with pytest.raises(ValueError,match="invalid OHLC"):
+        imported(tmp_path,rows=invalid,dataset_id="invalid",
+                 timestamp_semantics="session_date",source_timezone=None)
 
 @pytest.mark.parametrize("rows",[[["2024-01-01",10,11,9,10,1],["2024-01-01",10,11,9,10,1]],[["2024-01-01",10,9,8,10,1]],[["2024-01-01",10,11,9,"nan",1]]])
 def test_import_rejects_duplicate_invalid_ohlc_and_nan(tmp_path,rows):
@@ -63,3 +110,10 @@ def test_universe_mismatch_and_checksum_comparability(tmp_path):
     base={"dataset_checksum":"a","research_window":{"start":"1","end":"2"},"timeframe":"1d","cost_scenario":{"name":"base"}}
     assert comparable_performance([base,copy.deepcopy(base)]) is True
     changed=copy.deepcopy(base); changed["dataset_checksum"]="b"; assert comparable_performance([base,changed]) is False
+
+def test_aapl_session_date_dataset_is_blocked_by_demo_universe(tmp_path):
+    fixture=imported(tmp_path,symbol="AAPL",source_timezone=None,
+                     timestamp_semantics="session_date")
+    experiment=make_experiment(tmp_path,fixture["manifest"])
+    with pytest.raises(ValueError,match="universe"):
+        run_experiment(experiment,tmp_path/"reports")

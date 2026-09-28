@@ -106,6 +106,12 @@ All candidates in one experiment use the same processed checksum, research windo
 
 ## Real Data Intake
 
-`backtest/datasets.py` is the canonical historical dataset contract. `backtest/data.py` remains only as a compatibility loader for historical six-column demos. The provider-agnostic importer copies the source into immutable `data/raw/`, applies only explicit column mappings and timezone configuration, validates without repairing data, writes UTC seven-column OHLCV to `data/processed/`, and records checksums, mapping, timezone, session policy, adjustment status, and quality observations in `data/manifests/`.
+`backtest/datasets.py` is the canonical historical dataset contract. `backtest/data.py` remains only as a compatibility loader for historical six-column demos. The provider-agnostic importer copies the source into immutable `data/raw/`, applies only explicit column mappings and timestamp semantics, validates without repairing data, writes canonical seven-column OHLCV to `data/processed/`, and records checksums, mapping, timezone, session policy, adjustment status, and quality observations in `data/manifests/`.
 
-Alternative source columns must be mapped explicitly, for example `--map timestamp=Date --map open=Open`. Naive timestamps require `--timezone`; bars are never filled or forward-filled. Large gaps are reported without assuming weekends or holidays are missing market bars. No real-data provider has been selected or connected in Phase 3A.
+Alternative source columns must be mapped explicitly, for example `--map timestamp=Date --map open=Open`. Naive instant timestamps require `--timezone`; explicitly declared daily/weekly session dates follow the rules below. Bars are never filled or forward-filled. Large gaps are reported without assuming weekends or holidays are missing market bars. No real-data provider has been selected or connected in Phase 3A.
+
+### Daily/Weekly Session-Date Semantics
+
+Daily and weekly bars may explicitly use `timestamp_semantics: session_date`. Their canonical timestamp is the unchanged `YYYY-MM-DD` exchange-session label; the importer does not fabricate midnight, UTC, or an exchange timezone. Such manifests record `source_timezone` and `canonical_timezone` as null when the source does not establish them. Intraday bars continue to require timezone-aware timestamps, or an explicit source timezone that can be normalized to UTC.
+
+Datasets with unknown price-adjustment semantics may be onboarded for provenance, normalization, and engineering validation. They must not be treated as research-grade performance datasets until their adjustment semantics are established. Date gaps are informational without an exchange calendar: the importer does not forward-fill, insert bars, or assume that a calendar gap represents missing trading data.

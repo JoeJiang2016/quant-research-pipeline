@@ -1,4 +1,4 @@
-import json, subprocess, sys
+import copy, json, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -13,7 +13,7 @@ from backtest.strategy import fingerprint, load_strategy
 # Backward-compatible public name used by existing integrations and tests.
 validate = validate_strategy
 def build_result(file, *, bars=None, dataset_identity=None, evaluation=None,
-                 experiment_identity=None):
+                 experiment_identity=None, cost_override=None):
     s=load_strategy(file)
     if bars is None:
         data_path=ROOT/"data"/(s["dataset_id"]+".csv"); bars=load_bars(data_path)
@@ -22,16 +22,21 @@ def build_result(file, *, bars=None, dataset_identity=None, evaluation=None,
         dataset_identity=dict(dataset_identity or {})
         for key in ("dataset_id","data_version","data_checksum_sha256"):
             if key not in dataset_identity: raise ValueError(f"dataset identity missing {key}")
+    runtime_strategy=copy.deepcopy(s)
+    if cost_override is not None:
+        runtime_strategy["execution"]["commission_per_trade"] = cost_override["commission_per_trade"]
+        runtime_strategy["execution"]["slippage_bps"] = cost_override["slippage_bps"]
     boundaries=evaluation or {}
-    result=run(s,bars,evaluation_start=boundaries.get("start_index",0),
+    result=run(runtime_strategy,bars,evaluation_start=boundaries.get("start_index",0),
                evaluation_end=boundaries.get("end_index"))
     try: commit=subprocess.check_output(["git","-c",f"safe.directory={ROOT}","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
     except Exception: commit="uncommitted"
-    out={"strategy_id":s["strategy_id"],"strategy_version":s["strategy_version"],"strategy_fingerprint":fingerprint(s),"dataset_id":dataset_identity["dataset_id"],"dataset_version":dataset_identity["data_version"],"dataset_checksum":dataset_identity["data_checksum_sha256"],"period":{"start":result["equity_curve"][0]["timestamp"],"end":result["equity_curve"][-1]["timestamp"]},"metrics":metrics(result,s["risk"]["initial_equity"]),"equity_curve":result["equity_curve"],"trade_log":result["trades"],"parameter_snapshot":s,"execution_assumptions":{"signal_time":"bar_close","fill_time":"next_bar_open","same_bar_stop_target":"stop_first"},"reproducibility":{"git_commit":commit,"data_version":dataset_identity["data_version"],"data_checksum_sha256":dataset_identity["data_checksum_sha256"],"timestamp":datetime.now(timezone.utc).isoformat(),"engine_version":"1.2.0"}}
+    out={"strategy_id":s["strategy_id"],"strategy_version":s["strategy_version"],"strategy_fingerprint":fingerprint(s),"dataset_id":dataset_identity["dataset_id"],"dataset_version":dataset_identity["data_version"],"dataset_checksum":dataset_identity["data_checksum_sha256"],"period":{"start":result["equity_curve"][0]["timestamp"],"end":result["equity_curve"][-1]["timestamp"]},"metrics":metrics(result,s["risk"]["initial_equity"]),"ending_position_open":result["ending_position_open"],"ending_unrealized_pnl":result["ending_unrealized_pnl"],"equity_curve":result["equity_curve"],"trade_log":result["trades"],"parameter_snapshot":s,"execution_assumptions":{"signal_time":"bar_close","fill_time":"next_bar_open","same_bar_stop_target":"stop_first"},"reproducibility":{"git_commit":commit,"data_version":dataset_identity["data_version"],"data_checksum_sha256":dataset_identity["data_checksum_sha256"],"timestamp":datetime.now(timezone.utc).isoformat(),"engine_version":"1.3.0"}}
     if evaluation is not None:
         out["evaluation"]={key:evaluation[key] for key in ("segment","start","end","warmup_policy","boundary_mode")}
-        out["costs"]={"commission_per_trade":s["execution"]["commission_per_trade"],
-                      "slippage_bps":s["execution"]["slippage_bps"]}
+        out["costs"]={"commission_per_trade":runtime_strategy["execution"]["commission_per_trade"],
+                      "slippage_bps":runtime_strategy["execution"]["slippage_bps"],
+                      "source":"experiment_override" if cost_override is not None else "canonical_strategy"}
     if experiment_identity is not None:
         out.update(experiment_identity)
     validate_result(out)

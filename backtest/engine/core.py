@@ -22,11 +22,12 @@ def run(strategy, bars, *, evaluation_start=0, evaluation_end=None):
     evaluation_end = len(bars) - 1 if evaluation_end is None else evaluation_end
     if not 0 <= evaluation_start <= evaluation_end < len(bars):
         raise ValueError("invalid evaluation boundaries")
-    equity=r["initial_equity"]; cash=equity; position=None; pending=None; pending_exit=None; trades=[]; curve=[]; commissions=slippage=0.0
+    equity=r["initial_equity"]; cash=equity; position=None; pending=None; pending_exit=None; trades=[]; curve=[]; commissions=slippage=0.0; exposure_bars=0
     # State starts flat at the active boundary. Earlier bars remain readable by
     # indicator functions but are never traversed for signals, fills, or P&L.
     for i in range(evaluation_start, evaluation_end + 1):
         bar = bars[i]
+        exposed_this_bar = position is not None
         exited_this_bar = False
         if pending_exit == i and position is not None:
             long=position["side"]=="long"; raw=bar["open"]; fill=_fill(raw,"sell" if long else "buy",ex["slippage_bps"])
@@ -40,6 +41,7 @@ def run(strategy, bars, *, evaluation_start=0, evaluation_end=None):
             target_multiple=x.get("take_profit_atr_multiple")
             position={"side":e["direction"],"qty":qty,"entry":fill,"entry_time":bar["timestamp"],"signal_time":pending["signal_time"],"stop":fill + (-1 if e["direction"]=="long" else 1)*risk_per_unit,"target":None if target_multiple is None else fill + (1 if e["direction"]=="long" else -1)*pending["atr"]*target_multiple}
             commission=ex["commission_per_trade"]; cash-=commission; commissions+=commission; slippage+=abs(fill-raw)*qty; pending=None
+            exposed_this_bar = True
         if position:
             long=position["side"]=="long"; stop_hit=bar["low"]<=position["stop"] if long else bar["high"]>=position["stop"]; target_hit=position["target"] is not None and (bar["high"]>=position["target"] if long else bar["low"]<=position["target"])
             # Conservative assumption: if both occur in one OHLC bar, stop fills first.
@@ -57,7 +59,11 @@ def run(strategy, bars, *, evaluation_start=0, evaluation_end=None):
             if signal and i + 1 <= evaluation_end: pending={"execute_index":i+1,"atr":a,"signal_time":bar["timestamp"]}
         marked= cash if not position else cash + (bar["close"]-position["entry"])*position["qty"]*(1 if position["side"]=="long" else -1)
         curve.append({"timestamp":bar["timestamp"],"equity":marked})
-    return {"trades":trades,"equity_curve":curve,"commission":commissions,"slippage":slippage}
+        exposure_bars += int(exposed_this_bar)
+    unrealized = 0.0 if position is None else ((bars[evaluation_end]["close"]-position["entry"])*position["qty"]*(1 if position["side"]=="long" else -1))
+    return {"trades":trades,"equity_curve":curve,"commission":commissions,"slippage":slippage,
+            "exposure_bars":exposure_bars,"ending_position_open":position is not None,
+            "ending_unrealized_pnl":unrealized}
 
 def metrics(result, initial):
     trades=result["trades"]; pnls=[t["pnl"] for t in trades]; final=result["equity_curve"][-1]["equity"]; wins=[p for p in pnls if p>0]; losses=[p for p in pnls if p<0]; peak=initial; max_dd=0
@@ -66,4 +72,4 @@ def metrics(result, initial):
         returns.append((p["equity"]-prior)/prior); prior=p["equity"]; peak=max(peak,p["equity"]); max_dd=max(max_dd,(peak-p["equity"])/peak)
     sd=pstdev(returns) if len(returns)>1 else 0; downside=[min(0,v) for v in returns]; dsd=math.sqrt(mean([v*v for v in downside])) if downside else 0
     years=max(1/252,len(result["equity_curve"])/252)
-    return {"trades":len(trades),"win_rate":len(wins)/len(trades) if trades else 0,"avg_win":mean(wins) if wins else 0,"avg_loss":mean(losses) if losses else 0,"profit_factor":sum(wins)/abs(sum(losses)) if losses else None,"expectancy":mean(pnls) if pnls else 0,"max_drawdown":max_dd,"sharpe":(mean(returns)/sd*math.sqrt(252)) if sd else 0,"sortino":(mean(returns)/dsd*math.sqrt(252)) if dsd else 0,"total_return":final/initial-1,"cagr":(final/initial)**(1/years)-1,"exposure":sum(1 for p in result["equity_curve"] if p["equity"]!=initial)/len(result["equity_curve"]),"commission":result["commission"],"slippage":result["slippage"]}
+    return {"trades":len(trades),"win_rate":len(wins)/len(trades) if trades else 0,"avg_win":mean(wins) if wins else 0,"avg_loss":mean(losses) if losses else 0,"profit_factor":sum(wins)/abs(sum(losses)) if losses else None,"expectancy":mean(pnls) if pnls else 0,"max_drawdown":max_dd,"sharpe":(mean(returns)/sd*math.sqrt(252)) if sd else 0,"sortino":(mean(returns)/dsd*math.sqrt(252)) if dsd else 0,"total_return":final/initial-1,"cagr":(final/initial)**(1/years)-1,"exposure":result["exposure_bars"]/len(result["equity_curve"]),"commission":result["commission"],"slippage":result["slippage"]}

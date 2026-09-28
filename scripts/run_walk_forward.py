@@ -35,16 +35,16 @@ def main():
     manifest=create_manifest(dataset,dataset_id="DEMO_1D_synthetic_v1",symbol="DEMO",timeframe=strategy["timeframe"],timezone="UTC",source="synthetic/demo",price_adjustment="unknown")
     target=ROOT/"reports/walk_forward"/strategy["strategy_id"]; (target/"folds").mkdir(parents=True,exist_ok=True); write_manifest(target/"manifest.json",manifest)
     folds=build_folds(len(bars),train_bars=args.train_bars,test_bars=args.test_bars,anchored=args.anchored)
-    curves=[]; fold_results=[]
+    curves=[]; fold_results=[]; fold_exposure_bars=[]
     for fold in folds:
         # OOS run starts at its boundary; fixed parameters and no future bars are supplied.
         oos=bars[fold.test_start:fold.test_end]; result=run(strategy,oos); result_metrics=metrics(result,strategy["risk"]["initial_equity"])
         payload={"fold_id":fold.fold_id,"strategy_id":strategy["strategy_id"],"strategy_version":strategy["strategy_version"],"strategy_fingerprint":fingerprint(strategy),"train_start":bars[fold.train_start]["timestamp"],"train_end":bars[fold.train_end-1]["timestamp"],"test_start":oos[0]["timestamp"],"test_end":oos[-1]["timestamp"],"dataset_version":manifest["version"],"metrics":result_metrics,"trade_log":result["trades"],"warnings":["price_adjustment is unknown; results are not adjusted-action assumptions"]}
-        (target/"folds"/(fold.fold_id+".json")).write_text(json.dumps(payload,indent=2)+"\n"); fold_results.append(payload); curves.append(result["equity_curve"])
+        (target/"folds"/(fold.fold_id+".json")).write_text(json.dumps(payload,indent=2)+"\n"); fold_results.append(payload); curves.append(result["equity_curve"]); fold_exposure_bars.append(result["exposure_bars"])
     stitched=stitched_oos_equity(curves); stitched_trades=[trade for fold in fold_results for trade in fold["trade_log"]]
     for fold in fold_results:
         if any(not (fold["test_start"] <= trade["entry_time"] <= fold["test_end"] and fold["test_start"] <= trade["exit_time"] <= fold["test_end"]) for trade in fold["trade_log"]): raise AssertionError("IS trade leaked into OOS output")
-    combined=metrics({"trades":stitched_trades,"equity_curve":stitched,"commission":sum(t["commission"] for t in stitched_trades),"slippage":0},strategy["risk"]["initial_equity"])
+    combined=metrics({"trades":stitched_trades,"equity_curve":stitched,"commission":sum(t["commission"] for t in stitched_trades),"slippage":0,"exposure_bars":sum(fold_exposure_bars)},strategy["risk"]["initial_equity"])
     summary={"total_folds":len(folds),"oos_trade_count":len(stitched_trades),"combined_oos_return":combined["total_return"],"oos_max_drawdown":combined["max_drawdown"],"oos_profit_factor":combined["profit_factor"],"oos_expectancy":combined["expectancy"],"fold_to_fold_variation":{"return_range":[min(x["metrics"]["total_return"] for x in fold_results),max(x["metrics"]["total_return"] for x in fold_results)]},"adjustment_warning":"unknown"}
     (target/"walk_forward_summary.json").write_text(json.dumps(summary,indent=2)+"\n"); (target/"stitched_oos_equity.json").write_text(json.dumps(stitched,indent=2)+"\n"); (target/"stitched_oos_trade_log.json").write_text(json.dumps(stitched_trades,indent=2)+"\n")
     scenarios={}

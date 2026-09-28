@@ -133,3 +133,9 @@ This lets one immutable `US equity / 1d` strategy version be evaluated by separa
 Research experiments execute `evaluation.in_sample` and `evaluation.out_of_sample` as two independent runs rather than descriptive metadata. Both use `boundary_mode: flat_start`: initial equity is reset, and positions, pending entries, and pending exits never cross the boundary. Bars before a segment remain readable only as causal indicator warmup; the engine does not traverse them for signals, fills, trades, or P&L. A signal before OOS therefore cannot fill on its first bar. Equity curves and trade logs contain active evaluation bars only.
 
 IS and OOS summaries are factual and separate. Comparability is established within a segment only when dataset checksum, timeframe, dates, and effective canonical strategy costs match. IS and OOS are never treated as one performance sample, and the baseline output does not rank, select, approve, or modify strategies.
+
+## Fixed-parameter robustness
+
+Robustness analysis applies explicit cost overrides at runtime without changing canonical strategy YAML or fingerprints. Rolling OOS folds use fixed parameters, 756 warmup bars, 252 test bars, a 252-bar step, independent flat-start state, and exclude an incomplete final fold. Stitched curves are labeled as chronological aggregation of independent fold curves, not a continuous reinvested portfolio.
+
+Engine 1.3.0 defines exposure as evaluation bars during which a position was actually open for any part of the bar, divided by total evaluation bars. Earlier reports incorrectly inferred exposure from equity differing from initial equity; their exposure field is unreliable, while their other metrics remain reproducible. Results now also record whether a position remains open at the evaluation end and its marked-to-final-close unrealized P&L; no synthetic closing trade is inserted.

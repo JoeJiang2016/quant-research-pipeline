@@ -9,6 +9,9 @@ import yaml
 from backtest.datasets import import_dataset
 from backtest.engine.core import run
 from backtest.strategy import fingerprint, load_strategy
+from backtest.walk_forward import build_folds, stitched_oos_equity
+from scripts.run_backtest import build_result
+from scripts.run_aapl_robustness import COST_SCENARIOS, FOLD_CONFIG, _runtime
 from scripts.run_research_experiment import (BOUNDARY_MODE, WARMUP_POLICY,
                                              evaluation_indices, run_experiment)
 
@@ -90,6 +93,50 @@ def test_boundary_constants_and_frozen_v02_fingerprints():
     for family in ("breakout_trend_001", "pullback_trend_001", "mean_reversion_001"):
         strategy = load_strategy(ROOT / "strategies" / family / "v0.2.0/strategy.yaml")
         assert fingerprint(strategy) == fingerprint(copy.deepcopy(strategy))
+
+
+def test_exposure_uses_position_state_and_ending_position_is_recorded():
+    strategy = breakout_strategy()
+    closed = run(strategy, fixture_bars(), evaluation_start=2, evaluation_end=6)
+    assert closed["exposure_bars"] < len(closed["equity_curve"])
+    assert closed["exposure_bars"] > 0
+    strategy["exit"]["take_profit_atr_multiple"] = 100
+    open_result = run(strategy, fixture_bars()[:4], evaluation_start=2, evaluation_end=3)
+    assert open_result["ending_position_open"] is True
+    assert open_result["ending_unrealized_pnl"] != 0
+
+
+def test_cost_override_is_applied_without_fingerprint_or_parameter_change():
+    strategy_path = ROOT / "strategies/breakout_trend_001/v0.1.0/strategy.yaml"
+    original = load_strategy(strategy_path)
+    runtime = _runtime(original, COST_SCENARIOS[-1])
+    assert fingerprint(runtime) != fingerprint(original)
+    # The research identity remains canonical; overrides are execution scenarios only.
+    bars = [bar(index, 10 + index * 0.01) for index in range(1, 26)]
+    result = build_result(
+        strategy_path, bars=bars,
+        dataset_identity={"dataset_id": "fixture", "data_version": "1",
+                          "data_checksum_sha256": "a" * 64},
+        evaluation={"segment": "OOS", "start": "2024-01-03", "end": "2024-01-07",
+                    "start_index": 2, "end_index": 24,
+                    "warmup_policy": WARMUP_POLICY, "boundary_mode": BOUNDARY_MODE},
+        cost_override=COST_SCENARIOS[-1])
+    assert result["strategy_fingerprint"] == fingerprint(original)
+    assert result["parameter_snapshot"] == original
+    assert result["costs"] == {"commission_per_trade": 2.0, "slippage_bps": 20,
+                               "source": "experiment_override"}
+
+
+def test_rolling_folds_are_nonoverlapping_and_exclude_incomplete_tail():
+    folds = build_folds(2616, train_bars=FOLD_CONFIG["train_bars"],
+                        test_bars=FOLD_CONFIG["test_bars"], step=FOLD_CONFIG["step_bars"])
+    assert len(folds) == 7
+    assert all(left.test_end <= right.test_start for left, right in zip(folds, folds[1:]))
+    assert folds[-1].test_end == 2520 and folds[-1].test_end < 2616
+    curves = [[{"timestamp": f"2024-01-{index + 1:02d}", "equity": 100000}]
+              for index in range(3)]
+    assert [point["timestamp"] for point in stitched_oos_equity(curves)] == [
+        "2024-01-01", "2024-01-02", "2024-01-03"]
 
 
 def test_six_segment_results_share_provenance_and_summary_has_no_selection(tmp_path):

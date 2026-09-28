@@ -20,6 +20,8 @@ def test_download_contract_requires_explicit_parameters_and_version():
     validate_acquisition_config(config,installed_yfinance_version="1.7.0")
     broken=copy.deepcopy(config); del broken["common_parameters"]["repair"]
     with pytest.raises(ValueError,match="explicit"): validate_acquisition_config(broken)
+    broken=copy.deepcopy(config); del broken["profiles"]["raw"]["auto_adjust"]
+    with pytest.raises(ValueError,match="profile missing"): validate_acquisition_config(broken)
     with pytest.raises(ValueError,match="version"): validate_acquisition_config(config,installed_yfinance_version="other")
 
 

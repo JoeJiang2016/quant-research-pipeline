@@ -15,4 +15,6 @@ data/processed/*
 !data/processed/.gitkeep
 data/manifests/*
 !data/manifests/.gitkeep
+data/provider/*
+data/acquisitions/*
 

@@ -9,7 +9,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 REQUIRED_COLUMNS = ("timestamp", "open", "high", "low", "close", "volume", "symbol")
-ADJUSTMENTS = {"raw", "split_adjusted", "total_return_adjusted", "unknown"}
+ADJUSTMENTS = {"raw", "split_adjusted", "total_return_adjusted", "provider_adjusted", "unknown"}
 TIMESTAMP_SEMANTICS = {"instant", "session_date"}
 SESSION_DATE_TIMEFRAMES = {"1d", "1wk"}
 # Absorbs representation noise such as 10.299999999999 vs 10.300000000000
@@ -112,13 +112,14 @@ def create_manifest(path, *, dataset_id, symbol, timeframe, timezone, source,
                     source_timezone=None, timestamp_semantics="instant",
                     session_policy="unknown", asset_class="unknown",
                     column_mapping=None, quality_summary=None,
-                    import_timestamp=None):
+                    import_timestamp=None, adjustment_method=None,
+                    provenance=None):
     if price_adjustment not in ADJUSTMENTS:
         raise ValueError("unknown price adjustment status")
     bars = load_dataset(path, symbol=symbol, timeframe=timeframe,
                         timestamp_semantics=timestamp_semantics)
     processed_checksum=checksum(path)
-    return {"dataset_id": dataset_id, "dataset_version": version, "version": version, "symbol": symbol, "asset_class": asset_class, "timeframe": timeframe,
+    manifest={"dataset_id": dataset_id, "dataset_version": version, "version": version, "symbol": symbol, "asset_class": asset_class, "timeframe": timeframe,
             "timezone": timezone, "timestamp_semantics": timestamp_semantics,
             "source": source, "price_adjustment": price_adjustment,
             "start": bars[0]["timestamp"], "end": bars[-1]["timestamp"], "rows": len(bars),
@@ -128,6 +129,11 @@ def create_manifest(path, *, dataset_id, symbol, timeframe, timezone, source,
             "import_timestamp": import_timestamp or datetime.now(timezone_module.utc).isoformat(),
             "column_mapping": column_mapping or {name:name for name in REQUIRED_COLUMNS},
             "quality_summary": quality_summary or {"rows_validated":len(bars),"large_gaps":[]}}
+    if adjustment_method is not None:
+        manifest["adjustment_method"] = adjustment_method
+    if provenance is not None:
+        manifest["provenance"] = provenance
+    return manifest
 
 
 def write_manifest(path, manifest):
@@ -156,7 +162,8 @@ def _largest_date_gaps(bars, *, timestamp_semantics, limit=10):
 def import_dataset(input_path, *, dataset_id, symbol, timeframe, source_timezone, source,
                    price_adjustment="unknown", version="1", column_mapping=None,
                    session_policy="unknown", asset_class="unknown", output_root=None,
-                   expected_gap_seconds=None, timestamp_semantics="instant"):
+                   expected_gap_seconds=None, timestamp_semantics="instant",
+                   adjustment_method=None, provenance=None):
     """Copy immutable raw input and normalize it under explicit timestamp semantics."""
     input_path=Path(input_path); root=Path(output_root or Path(__file__).resolve().parents[1]/"data")
     if not symbol: raise ValueError("explicit symbol metadata is required")
@@ -219,7 +226,7 @@ def import_dataset(input_path, *, dataset_id, symbol, timeframe, source_timezone
                  bars,timestamp_semantics=timestamp_semantics),
              "gap_interpretation":"informational_only_no_exchange_calendar"}
     canonical_timezone=None if timestamp_semantics == "session_date" else "UTC"
-    manifest=create_manifest(processed_path,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,timezone=canonical_timezone,source=source,price_adjustment=price_adjustment,version=version,raw_path=raw_path,source_timezone=source_timezone,timestamp_semantics=timestamp_semantics,session_policy=session_policy,asset_class=asset_class,column_mapping=mapping,quality_summary=quality)
+    manifest=create_manifest(processed_path,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,timezone=canonical_timezone,source=source,price_adjustment=price_adjustment,version=version,raw_path=raw_path,source_timezone=source_timezone,timestamp_semantics=timestamp_semantics,session_policy=session_policy,asset_class=asset_class,column_mapping=mapping,quality_summary=quality,adjustment_method=adjustment_method,provenance=provenance)
     manifest_path=manifest_dir/f"{dataset_id}_v{version}.json"; write_manifest(manifest_path,manifest)
     quality_path=manifest_dir/f"{dataset_id}_v{version}.quality.json"; quality_path.write_text(json.dumps(quality,indent=2)+"\n",encoding="utf-8")
     return {"raw_path":raw_path,"processed_path":processed_path,"manifest_path":manifest_path,"quality_path":quality_path,"manifest":manifest}

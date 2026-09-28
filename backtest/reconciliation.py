@@ -14,9 +14,11 @@ PROFILES = {"raw", "auto_adjusted"}
 
 
 def validate_acquisition_config(config, *, installed_yfinance_version=None):
-    required = {"provider", "library", "library_version", "function", "cache_path", "symbol",
+    required = {"contract_version", "acquisition_id", "provider", "library", "library_version", "function", "cache_path", "symbol",
                 "start", "end_exclusive", "timestamp_semantics",
-                "download_semantics", "common_parameters", "profiles", "comparison"}
+                "download_semantics", "common_parameters", "profiles",
+                "acquisition_manifest_path", "canonical_column_mapping",
+                "session_policy", "asset_class"}
     missing = required - set(config)
     if missing:
         raise ValueError(f"acquisition config missing: {sorted(missing)}")
@@ -25,12 +27,24 @@ def validate_acquisition_config(config, *, installed_yfinance_version=None):
         raise ValueError(f"download parameters must be explicit: {sorted(parameter_missing)}")
     if set(config["profiles"]) != PROFILES:
         raise ValueError("raw and auto_adjusted profiles are required")
+    profile_required = {"auto_adjust", "dataset_id", "dataset_version", "artifact_path",
+                        "price_adjustment", "adjustment_method"}
+    for name, profile in config["profiles"].items():
+        missing_profile = profile_required - set(profile)
+        if missing_profile:
+            raise ValueError(f"{name} profile missing: {sorted(missing_profile)}")
     if config["profiles"]["raw"].get("auto_adjust") is not False:
         raise ValueError("raw profile must set auto_adjust=false")
     if config["profiles"]["auto_adjusted"].get("auto_adjust") is not True:
         raise ValueError("auto_adjusted profile must set auto_adjust=true")
     if config["timestamp_semantics"] != "session_date":
         raise ValueError("daily reconciliation must use session_date")
+    if config["common_parameters"]["repair"] is not False:
+        raise ValueError("canonical acquisition must set repair=false")
+    if config["common_parameters"]["actions"] is not True:
+        raise ValueError("canonical acquisition must preserve actions")
+    if config["profiles"]["raw"]["dataset_id"] == config["profiles"]["auto_adjusted"]["dataset_id"]:
+        raise ValueError("raw and adjusted dataset identities must differ")
     if config["download_semantics"] != {
             "start_inclusive": True, "end_exclusive": True, "period": None}:
         raise ValueError("start/end semantics must be explicit")

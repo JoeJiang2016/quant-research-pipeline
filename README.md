@@ -42,7 +42,7 @@ Meta Muse can write candidate YAML only. A future ChatGPT review can consume imm
 
 Phase 2A adds a fail-fast historical data layer for CSV and optional Parquet data. Input bars must include `timestamp, open, high, low, close, volume, symbol`; timestamps require an explicit timezone, symbols and timeframes are mandatory metadata, and malformed OHLC, duplicate/non-monotonic timestamps, NaN/infinite values, and negative volume are rejected. Gaps are reported explicitly rather than repaired.
 
-Every dataset has a reproducible manifest containing its identity, version, source, symbol, timeframe, timezone, date range, row count, SHA-256, and price-adjustment status. Adjustment status is one of `raw`, `split_adjusted`, `total_return_adjusted`, or `unknown`; `unknown` is never treated as adjusted and is reported as a warning.
+Every dataset has a reproducible manifest containing its identity, version, source, symbol, timeframe, timezone, date range, row count, SHA-256, and price-adjustment status. Adjustment status is one of `raw`, `split_adjusted`, `total_return_adjusted`, `provider_adjusted`, or `unknown`; `provider_adjusted` requires an explicit adjustment method, while `unknown` is never treated as adjusted and is reported as a warning.
 
 Walk-forward windows are deterministic rolling or expanding (`--anchored`) boundaries. The runner uses fixed candidate parameters: there is no optimizer, parameter selection, strategy promotion, or use of future/OOS bars in a training window. Headline output consists only of OOS folds and a stitched OOS equity curve. Cost sensitivity reports fixed base, 1.5x/2x slippage, and 2x commission scenarios; it does not choose a winner.
 
@@ -115,3 +115,9 @@ Alternative source columns must be mapped explicitly, for example `--map timesta
 Daily and weekly bars may explicitly use `timestamp_semantics: session_date`. Their canonical timestamp is the unchanged `YYYY-MM-DD` exchange-session label; the importer does not fabricate midnight, UTC, or an exchange timezone. Such manifests record `source_timezone` and `canonical_timezone` as null when the source does not establish them. Intraday bars continue to require timezone-aware timestamps, or an explicit source timezone that can be normalized to UTC.
 
 Datasets with unknown price-adjustment semantics may be onboarded for provenance, normalization, and engineering validation. They must not be treated as research-grade performance datasets until their adjustment semantics are established. Date gaps are informational without an exchange calendar: the importer does not forward-fill, insert bars, or assume that a calendar gap represents missing trading data.
+
+## Yahoo research-data contract
+
+`config/data_sources/yfinance_daily.json` is the explicit acquisition contract for the first controlled AAPL daily dataset. `scripts/download_yfinance_dataset.py` requests two immutable Yahoo/yfinance 1.7.0 views: provider evidence (`auto_adjust=false`, actions preserved) and a research price view (`auto_adjust=true`). It delegates normalization, validation, quality reporting, and dataset manifests to `backtest/datasets.py`; no provider-specific second loader exists. The adjusted view is conservatively classified as `provider_adjusted` with `adjustment_method: yfinance_auto_adjust`. See `docs/data/yfinance_adjustment_semantics.md` for the local source audit.
+
+The historical Yahoo files under `C:\Projects\backtest_app\data` remain historical reconciliation and engineering smoke-test evidence only. Their yfinance version and adjustment semantics are `UNKNOWN`; they are not inputs to this acquisition pipeline and are not a canonical research baseline. They are neither changed nor deleted by this repository.

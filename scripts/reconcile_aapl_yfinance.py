@@ -19,23 +19,11 @@ from backtest.reconciliation import (compare_csv_files, load_config, sha256,
 
 
 def _download(yf, config, profile):
-    parameters = dict(config["common_parameters"])
-    parameters["auto_adjust"] = config["profiles"][profile]["auto_adjust"]
-    frame = yf.download(
-        config["symbol"], start=config["start"], end=config["end_exclusive"],
-        **parameters,
-    )
-    if frame.empty:
-        raise RuntimeError(f"empty controlled download: {profile}")
-    frame.index.name = "Date"
-    output = ROOT / config["profiles"][profile]["output_path"]
-    output.parent.mkdir(parents=True, exist_ok=True)
-    frame.to_csv(output, lineterminator="\n", date_format="%Y-%m-%d")
-    return output, frame
+    raise RuntimeError("run download_yfinance_dataset.py first; reconciliation cannot overwrite canonical artifacts")
 
 
 def _reuse(pd, config, profile):
-    output = ROOT / config["profiles"][profile]["output_path"]
+    output = ROOT / config["profiles"][profile]["artifact_path"]
     if not output.exists():
         raise FileNotFoundError(f"controlled raw file is missing: {output}")
     return output, pd.read_csv(output,parse_dates=["Date"],index_col="Date")
@@ -120,12 +108,13 @@ def main(*, reuse_downloaded=False):
     acquire = (lambda profile:_reuse(pd,config,profile)) if reuse_downloaded else (lambda profile:_download(yf,config,profile))
     raw_path, raw_frame = acquire("raw")
     adjusted_path, adjusted_frame = acquire("auto_adjusted")
-    comparison = config["comparison"]
+    comparison = {"fields":["Open","High","Low","Close","Volume"],
+                  "absolute_tolerance":"1e-10","relative_tolerance":"1e-12"}
     fields = comparison["fields"]
     arguments = {"fields":fields,
                  "absolute_tolerance":comparison["absolute_tolerance"],
                  "relative_tolerance":comparison["relative_tolerance"]}
-    legacy_path = Path(comparison["legacy_path"])
+    legacy_path = Path("C:/Projects/backtest_app/data/AAPL_1d.csv")
     raw_comparison = compare_csv_files(legacy_path, raw_path, **arguments)
     adjusted_comparison = compare_csv_files(legacy_path, adjusted_path, **arguments)
     from backtest.reconciliation import load_session_rows

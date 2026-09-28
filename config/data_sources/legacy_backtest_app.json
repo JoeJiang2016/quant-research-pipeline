@@ -1,0 +1,140 @@
+{
+  "source_id": "legacy_backtest_app",
+  "audit_scope": "C:\\Projects\\backtest_app",
+  "provider": {
+    "value": "Yahoo Finance",
+    "confidence": "confirmed_via_library_and_call",
+    "evidence": [
+      {
+        "source_file": "C:\\Projects\\backtest_app\\data_download.py",
+        "source_lines": "5,55-63",
+        "fact": "Imports yfinance as yf and calls yf.download."
+      }
+    ]
+  },
+  "download_library": {
+    "value": "yfinance",
+    "version": "UNKNOWN",
+    "function": "yfinance.download",
+    "evidence": [
+      {
+        "source_file": "C:\\Projects\\backtest_app\\data_download.py",
+        "source_lines": "60",
+        "call": "yf.download(ticker, start=start, end=end, interval=interval, progress=False)"
+      },
+      {
+        "source_file": "C:\\Projects\\backtest_app",
+        "source_lines": null,
+        "fact": "No requirements, lockfile, environment file, or Git history is present."
+      }
+    ]
+  },
+  "download_parameters": {
+    "explicit": {
+      "ticker": "function argument",
+      "start": "function argument",
+      "end": "function argument",
+      "interval": "function argument",
+      "progress": false
+    },
+    "not_explicit": [
+      "auto_adjust",
+      "back_adjust",
+      "actions",
+      "prepost",
+      "repair"
+    ],
+    "source_file": "C:\\Projects\\backtest_app\\data_download.py",
+    "source_lines": "56-60"
+  },
+  "csv_pipeline": {
+    "value": "download, flatten columns, remove timezone, calculate indicators, merge/deduplicate/sort, write CSV",
+    "confidence": "confirmed",
+    "source_file": "C:\\Projects\\backtest_app\\data_download.py",
+    "source_lines": "74-147"
+  },
+  "parquet_pipeline": {
+    "value": "UNKNOWN",
+    "confidence": "generator_missing",
+    "content_evidence": {
+      "batch_created_local_time": "2025-11-29T15:28:33-05:00/2025-11-29T15:31:04-05:00",
+      "file_count": 496,
+      "symbol_set_matches_0_0_list": true,
+      "writer": "pyarrow 14.0.2",
+      "pandas_version": "2.1.4",
+      "aapl_overlap_rows": 2616,
+      "aapl_ohlcv_overlap_exact": true,
+      "aapl_appended_rows": 30,
+      "aapl_parquet_end": "2025-11-28"
+    }
+  },
+  "price_adjustment": {
+    "value": "unknown",
+    "confidence": "unresolved",
+    "reason": "auto_adjust and back_adjust are omitted and the yfinance version/defaults are not pinned"
+  },
+  "adj_close": {
+    "value": "UNKNOWN",
+    "confidence": "unresolved",
+    "evidence": "AAPL Parquet has 30 non-null tail values equal to Close; no generating code survives."
+  },
+  "timestamp": {
+    "semantics": "session_date",
+    "confidence": "confirmed_for_stored_csv",
+    "source_timezone": null,
+    "canonical_timezone": null,
+    "evidence": {
+      "source_file": "C:\\Projects\\backtest_app\\data_download.py",
+      "source_lines": "136-140,147",
+      "fact": "The provider index is renamed Date and timezone information is explicitly removed before CSV export."
+    }
+  },
+  "session_policy": {
+    "value": "unknown",
+    "confidence": "unresolved",
+    "reason": "prepost is not explicit and the yfinance version is unknown"
+  },
+  "corporate_actions": {
+    "splits_saved": false,
+    "dividends_saved": false,
+    "actions_saved": false,
+    "manual_adjustment_found": false,
+    "confidence": "no_support_found_in_surviving_source"
+  },
+  "symbol_list": {
+    "path": "C:\\Projects\\backtest_app\\data\\0.0 list.csv",
+    "row_count": 496,
+    "upstream_source": "UNKNOWN",
+    "filesystem_created": "2025-10-18T20:00:14-04:00",
+    "point_in_time_membership": "UNKNOWN",
+    "delisted_symbol_handling": "UNKNOWN",
+    "data_directory_symbol_count": 501,
+    "symbols_not_in_current_list": [
+      "ANSS",
+      "HES",
+      "JNPR",
+      "KIM",
+      "PARA"
+    ]
+  },
+  "survivorship_bias": {
+    "risk": "potentially_high",
+    "evidence": "A single symbol-list snapshot drives ten-year downloads; no historical membership, delisting, ticker-change, merger, or acquisition logic was found."
+  },
+  "aapl_manifest_resolution": {
+    "can_resolve": {
+      "provider": "Yahoo Finance via yfinance",
+      "download_function": "yfinance.download",
+      "timestamp_semantics": "session_date"
+    },
+    "remains_unknown": [
+      "yfinance_version",
+      "price_adjustment",
+      "session_policy",
+      "source_timezone",
+      "parquet_generation_function",
+      "symbol_list_upstream_source"
+    ],
+    "recommended_action": "Do not modify v1 in place. If confirmed provenance is adopted, create an approved immutable aapl_1d_legacy_v2 while retaining unknown adjustment/session metadata."
+  }
+}

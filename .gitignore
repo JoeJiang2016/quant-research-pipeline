@@ -6,4 +6,10 @@ __pycache__/
 reports/*
 !reports/.gitkeep
 data/*.generated.csv
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/manifests/*
+!data/manifests/.gitkeep
 

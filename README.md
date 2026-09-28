@@ -1,4 +1,4 @@
-# Quant research and deterministic backtesting — Phase 1
+# Quant research and deterministic backtesting — Phase 2A
 
 This repository is a research-only foundation: `Strategy Candidate → Deterministic Backtest → Structured Result`. It does not connect to TradeStation, place orders, call OpenAI, or use an LLM in calculations.
 
@@ -37,3 +37,19 @@ Meta Muse has one canonical repository entry point: [`integration/muse_entry.jso
 ## Future interfaces (not implemented)
 
 Meta Muse can write candidate YAML only. A future ChatGPT review can consume immutable result JSON and produce a separately schema-validated risk-policy proposal. A future execution adapter can consume an approved, signed strategy/result artifact; it must remain outside this research engine and retain independent hard risk controls.
+
+## Historical data and walk-forward framework
+
+Phase 2A adds a fail-fast historical data layer for CSV and optional Parquet data. Input bars must include `timestamp, open, high, low, close, volume, symbol`; timestamps require an explicit timezone, symbols and timeframes are mandatory metadata, and malformed OHLC, duplicate/non-monotonic timestamps, NaN/infinite values, and negative volume are rejected. Gaps are reported explicitly rather than repaired.
+
+Every dataset has a reproducible manifest containing its identity, version, source, symbol, timeframe, timezone, date range, row count, SHA-256, and price-adjustment status. Adjustment status is one of `raw`, `split_adjusted`, `total_return_adjusted`, or `unknown`; `unknown` is never treated as adjusted and is reported as a warning.
+
+Walk-forward windows are deterministic rolling or expanding (`--anchored`) boundaries. The runner uses fixed candidate parameters: there is no optimizer, parameter selection, strategy promotion, or use of future/OOS bars in a training window. Headline output consists only of OOS folds and a stitched OOS equity curve. Cost sensitivity reports fixed base, 1.5x/2x slippage, and 2x commission scenarios; it does not choose a winner.
+
+Run the offline synthetic demo (it creates clearly labeled deterministic synthetic data locally):
+
+```powershell
+python scripts/run_walk_forward.py --strategy strategies/candidates/demo_breakout.yaml --dataset data/processed/demo.csv
+```
+
+It writes `manifest.json`, per-fold reports, `walk_forward_summary.json`, `stitched_oos_equity.json`, and `cost_sensitivity.json` below `reports/walk_forward/demo_20bar_breakout/`. Meta Muse remains a future candidate producer only; TradeStation and all paper/live trading remain unconnected.

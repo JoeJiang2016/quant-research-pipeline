@@ -139,3 +139,9 @@ IS and OOS summaries are factual and separate. Comparability is established with
 Robustness analysis applies explicit cost overrides at runtime without changing canonical strategy YAML or fingerprints. Rolling OOS folds use fixed parameters, 756 warmup bars, 252 test bars, a 252-bar step, independent flat-start state, and exclude an incomplete final fold. Stitched curves are labeled as chronological aggregation of independent fold curves, not a continuous reinvested portfolio.
 
 Engine 1.3.0 defines exposure as evaluation bars during which a position was actually open for any part of the bar, divided by total evaluation bars. Earlier reports incorrectly inferred exposure from equity differing from initial equity; their exposure field is unreliable, while their other metrics remain reproducible. Results now also record whether a position remains open at the evaluation end and its marked-to-final-close unrealized P&L; no synthetic closing trade is inserted.
+
+## Cross-symbol pilot validation
+
+The fixed pilot cohort is AAPL, MSFT, GOOGL, AMZN, and NVDA. Each symbol has an independent immutable acquisition contract, provider raw evidence, provider-adjusted canonical research view, dataset manifest, and fixed-date experiment using the same three v0.2.0 strategy fingerprints and canonical costs. `scripts/run_cross_symbol_validation.py` only validates inputs, invokes the existing experiment runner, checks AAPL reproduction, and aggregates factual IS/OOS records; it does not implement trading logic or modify parameters.
+
+This cohort was specified before observing its cross-symbol results, but it consists of modern large-cap survivors and has material selection and survivorship limitations. Its output is an engineering and fixed-parameter generalization pilot, not evidence that the strategies apply to the full US equity universe and not an investment or production recommendation.

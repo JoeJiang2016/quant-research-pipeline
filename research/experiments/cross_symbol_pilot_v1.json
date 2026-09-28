@@ -1,0 +1,12 @@
+{
+  "cohort_id": "pilot_v1",
+  "symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA"],
+  "experiments": {
+    "AAPL": "research/experiments/aapl_real_baseline_v1.yaml",
+    "MSFT": "research/experiments/msft_real_baseline_v1.yaml",
+    "GOOGL": "research/experiments/googl_real_baseline_v1.yaml",
+    "AMZN": "research/experiments/amzn_real_baseline_v1.yaml",
+    "NVDA": "research/experiments/nvda_real_baseline_v1.yaml"
+  },
+  "limitations": "Pre-specified modern large-cap pilot cohort with selection and survivorship limitations; not representative of the US equity universe."
+}

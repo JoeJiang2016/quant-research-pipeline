@@ -1,0 +1,7 @@
+{
+  "contract_version":"2","acquisition_id":"amzn_1d_yf_v1","provider":"Yahoo Finance","library":"yfinance","library_version":"1.7.0","function":"yfinance.download","cache_path":".deps/yfinance-cache","symbol":"AMZN","start":"2015-05-26","end_exclusive":"2025-10-17","timestamp_semantics":"session_date",
+  "download_semantics":{"start_inclusive":true,"end_exclusive":true,"period":null},
+  "common_parameters":{"interval":"1d","back_adjust":false,"actions":true,"prepost":false,"repair":false,"progress":false,"threads":false,"multi_level_index":false,"ignore_tz":true,"group_by":"column","keepna":false,"rounding":false,"timeout":30},
+  "profiles":{"raw":{"auto_adjust":false,"dataset_id":"amzn_1d_yf_raw","dataset_version":"1","artifact_path":"data/provider/yfinance/amzn_1d_yf_v1/provider_raw.csv","price_adjustment":"raw","adjustment_method":"yfinance_auto_adjust_false_provider_view"},"auto_adjusted":{"auto_adjust":true,"dataset_id":"amzn_1d_yf_adjusted","dataset_version":"1","artifact_path":"data/provider/yfinance/amzn_1d_yf_v1/provider_auto_adjusted.csv","price_adjustment":"provider_adjusted","adjustment_method":"yfinance_auto_adjust"}},
+  "acquisition_manifest_path":"data/acquisitions/amzn_1d_yf_v1.json","canonical_column_mapping":{"timestamp":"Date","open":"Open","high":"High","low":"Low","close":"Close","volume":"Volume"},"session_policy":"Yahoo Finance daily session labels; no calendar repair","asset_class":"equity","country":"US"
+}

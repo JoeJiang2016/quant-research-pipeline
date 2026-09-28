@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["max_risk_per_trade_pct","max_total_exposure_pct","max_daily_loss_pct"],"properties":{"max_risk_per_trade_pct":{"type":"number","minimum":0,"maximum":1},"max_total_exposure_pct":{"type":"number","minimum":0,"maximum":1},"max_daily_loss_pct":{"type":"number","minimum":0,"maximum":1}}}

@@ -5,7 +5,7 @@ import yaml
 from backtest.validation import validate_strategy
 
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
-BEHAVIOR_KEYS = ("strategy_id", "strategy_version", "universe", "timeframe", "entry", "exit", "risk", "pyramiding", "position_sizing", "session", "execution")
+BEHAVIOR_KEYS = ("strategy_id", "universe", "timeframe", "entry", "exit", "risk", "pyramiding", "position_sizing", "session", "execution")
 
 def behavior_projection(strategy):
     return {key: strategy[key] for key in BEHAVIOR_KEYS if key in strategy}
@@ -20,6 +20,15 @@ def load_strategy(path):
     if path.name != "strategy.yaml" or path.parent.name != "v" + strategy["strategy_version"]: raise ValueError("strategy directory version must match strategy.yaml")
     validate_strategy(strategy)
     return strategy
+
+def version_directory(family_directory, version):
+    """Return a new-version destination, refusing silent historical overwrite."""
+    if not SEMVER.fullmatch(version):
+        raise ValueError("strategy_version must be MAJOR.MINOR.PATCH")
+    target=Path(family_directory) / ("v" + version)
+    if target.exists():
+        raise FileExistsError("strategy version already exists and is immutable")
+    return target
 
 def compare(left, right):
     a,b=behavior_projection(left),behavior_projection(right); changed=[]

@@ -1,0 +1,15 @@
+strategy_id: breakout_001
+strategy_version: "1.1.0"
+status: candidate
+dataset_id: demo_ohlcv
+universe: [DEMO]
+timeframe: 1d
+description: Test-only immutable version with a different stop ATR behavior field.
+execution: {signal_time: bar_close, fill_time: next_bar_open, order_type: market, commission_per_trade: 1.00, slippage_bps: 5}
+entry: {rule: close_breakout, lookback_bars: 20, direction: long}
+exit: {stop_atr_multiple: 2.5, take_profit_atr_multiple: 4.0, atr_period: 14, time_exit_bars: null, condition_exit: none}
+risk: {initial_equity: 100000, risk_per_trade_pct: 0.01}
+pyramiding: {enabled: false, max_entries: 1, scale_in_trigger_atr: null, scale_in_size_pct: 0}
+position_sizing: {method: risk_based, fixed_quantity: null}
+session: {policy: regular, rules: all_sessions}
+evaluation: {in_sample_end: "2023-02-20", out_of_sample_start: "2023-02-21", walk_forward: false}

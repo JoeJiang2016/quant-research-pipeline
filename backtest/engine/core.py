@@ -1,6 +1,7 @@
 """Deterministic, bar-based backtest engine. Signals at close fill only next open."""
 import math
 from statistics import mean, pstdev
+from backtest.strategies.registry import get_strategy_logic
 
 def atr(bars, index, period):
     if index < period: return None
@@ -14,7 +15,8 @@ def _fill(price, side, bps): return price * (1 + (bps / 10000 if side == "buy" e
 
 def run(strategy, bars):
     e, x, r, ex = strategy["entry"], strategy["exit"], strategy["risk"], strategy["execution"]
-    minimum = max(e["lookback_bars"], x["atr_period"]) + 2
+    signal_logic = get_strategy_logic(strategy)
+    minimum = max(signal_logic.minimum_history(strategy), x["atr_period"]) + 2
     if len(bars) < minimum:
         raise ValueError(f"insufficient history: need at least {minimum} bars")
     equity=r["initial_equity"]; cash=equity; position=None; pending=None; trades=[]; curve=[]; commissions=slippage=0.0
@@ -34,10 +36,10 @@ def run(strategy, bars):
                 raw=position["stop"] if stop_hit else position["target"]; reason="stop" if stop_hit else "take_profit"; fill=_fill(raw, "sell" if long else "buy", ex["slippage_bps"])
                 pnl=(fill-position["entry"])*position["qty"]*(1 if long else -1); commission=ex["commission_per_trade"]; cash+=pnl-commission; equity=cash; commissions+=commission; slippage+=abs(fill-raw)*position["qty"]
                 trades.append({"signal_time":position["signal_time"],"entry_time":position["entry_time"],"exit_time":bar["timestamp"],"side":position["side"],"quantity":position["qty"],"entry_price":position["entry"],"exit_price":fill,"exit_reason":reason,"pnl":pnl-(2*commission),"commission":2*ex["commission_per_trade"]}); position=None; exited_this_bar = True
-        # close signal: uses bars strictly before i for breakout and data through i for ATR.
-        if position is None and pending is None and not exited_this_bar and i >= max(e["lookback_bars"], x["atr_period"]):
-            history=bars[i-e["lookback_bars"]:i]; threshold=max(b["high"] for b in history); a=atr(bars,i,x["atr_period"])
-            signal=bar["close"]>threshold if e["direction"]=="long" else bar["close"]<min(b["low"] for b in history)
+        # Strategy logic only evaluates the close signal. The shared engine owns all state and execution.
+        if position is None and pending is None and not exited_this_bar and i >= max(signal_logic.minimum_history(strategy), x["atr_period"]):
+            a=atr(bars,i,x["atr_period"])
+            signal=signal_logic.evaluate_entry(strategy,bars,i)
             if signal and i+1 < len(bars): pending={"execute_index":i+1,"atr":a,"signal_time":bar["timestamp"]}
         marked= cash if not position else cash + (bar["close"]-position["entry"])*position["qty"]*(1 if position["side"]=="long" else -1)
         curve.append({"timestamp":bar["timestamp"],"equity":marked})

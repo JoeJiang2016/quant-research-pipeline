@@ -5,7 +5,7 @@ import yaml
 from backtest.validation import validate_strategy
 
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
-BEHAVIOR_KEYS = ("strategy_id", "universe", "timeframe", "entry", "exit", "risk", "pyramiding", "position_sizing", "session", "execution")
+BEHAVIOR_KEYS = ("strategy_id", "strategy_type", "universe", "timeframe", "entry", "exit", "risk", "pyramiding", "position_sizing", "session", "execution")
 
 def behavior_projection(strategy):
     return {key: strategy[key] for key in BEHAVIOR_KEYS if key in strategy}

@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def validate_strategy(strategy):
     # Canonical versioning fields are enforced by backtest.strategy; retain
     # compatibility for legacy candidate files during their explicit migration.
-    canonical = {"pyramiding", "position_sizing", "session", "description", "notes", "author", "created_at"}
+    canonical = {"strategy_type", "pyramiding", "position_sizing", "session", "description", "notes", "author", "created_at"}
     legacy_view = {key: value for key, value in strategy.items() if key not in canonical}
     try:
         validate_jsonschema(legacy_view, json.loads((ROOT / "schemas" / "strategy.schema.json").read_text()))

@@ -69,3 +69,15 @@ python scripts/compare_strategy_versions.py strategies/breakout_001/v1.0.0/strat
 ```
 
 Future Muse candidates may add a new strategy family and new candidate version only; they cannot overwrite historical versions, results, approvals, or produce trading instructions.
+
+## Strategy Candidate Pool
+
+Batch 1 contains three canonical research candidates: `breakout_trend_001 v0.1.0`, `pullback_trend_001 v0.1.0`, and `mean_reversion_001 v0.1.0`. `strategies/candidates.json` is metadata-only; all behavior remains in each immutable `strategy.yaml`.
+
+Run the complete pool without ranking or selection:
+
+```powershell
+python scripts/run_candidate_batch.py
+```
+
+The batch writes a provenance manifest, one standard result per candidate, and a factual `candidate_summary.json` below `reports/candidates/<batch_id>/`. The candidates currently use different deterministic smoke-test datasets, so `comparable_performance` is false. These synthetic results validate implementation, engine integration, reproducibility, and provenance only; they do not demonstrate market efficacy and must not be used to select or promote a strategy.

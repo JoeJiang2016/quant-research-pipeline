@@ -1,0 +1,5 @@
+[
+  {"strategy_id": "breakout_trend_001", "version": "0.1.0", "family": "trend_breakout", "status": "candidate"},
+  {"strategy_id": "pullback_trend_001", "version": "0.1.0", "family": "trend_pullback", "status": "candidate"},
+  {"strategy_id": "mean_reversion_001", "version": "0.1.0", "family": "mean_reversion", "status": "candidate"}
+]

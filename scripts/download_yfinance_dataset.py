@@ -50,11 +50,12 @@ def acquire(config, *, yf):
     return finalize_acquisition(config, root=ROOT)
 
 
-def main(config_path):
+def main(config_path, *, reuse_provider_artifacts=False):
     import yfinance as yf
 
     config = load_config(config_path)
-    result = acquire(config, yf=yf)
+    result = (finalize_acquisition(config, root=ROOT) if reuse_provider_artifacts
+              else acquire(config, yf=yf))
     for name in ("raw", "auto_adjusted"):
         manifest = result[name]["manifest"]
         print(f"{name}: {manifest['dataset_id']}_v{manifest['version']} "
@@ -66,4 +67,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path,
                         default=ROOT / "config/data_sources/yfinance_daily.json")
-    main(parser.parse_args().config)
+    parser.add_argument("--reuse-provider-artifacts", action="store_true")
+    arguments = parser.parse_args()
+    main(arguments.config, reuse_provider_artifacts=arguments.reuse_provider_artifacts)

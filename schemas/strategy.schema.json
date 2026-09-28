@@ -8,7 +8,21 @@
     "strategy_version": {"type": "string", "minLength": 1},
     "status": {"const": "candidate", "description": "Only candidate strategies may enter the deterministic backtest pipeline."},
     "dataset_id": {"type": "string", "minLength": 1},
-    "universe": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "universe": {
+      "oneOf": [
+        {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1, "uniqueItems": true},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "asset_class", "country"],
+          "properties": {
+            "mode": {"const": "asset_class"},
+            "asset_class": {"enum": ["equity"]},
+            "country": {"type": "string", "pattern": "^[A-Z]{2}$"}
+          }
+        }
+      ]
+    },
     "timeframe": {"type": "string", "enum": ["1m", "5m", "15m", "1h", "1d"]},
     "execution": {"type": "object", "required": ["signal_time", "fill_time", "order_type", "commission_per_trade", "slippage_bps"], "properties": {"signal_time": {"const": "bar_close"}, "fill_time": {"const": "next_bar_open"}, "order_type": {"enum": ["market", "limit"]}, "commission_per_trade": {"type": "number", "minimum": 0, "description": "USD per filled order"}, "slippage_bps": {"type": "number", "minimum": 0, "maximum": 1000, "description": "basis points applied adversely"}}},
     "entry": {"type": "object", "required": ["rule", "direction"], "properties": {"rule": {"enum": ["close_breakout", "ema_pullback_confirmation", "zscore_mean_reversion"]}, "lookback_bars": {"type": "integer", "minimum": 2, "maximum": 500}, "fast_ema_period": {"type": "integer", "minimum": 2, "maximum": 500}, "slow_ema_period": {"type": "integer", "minimum": 3, "maximum": 500}, "pullback_distance_atr": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}, "confirmation_rule": {"enum": ["close_above_previous_and_fast_ema"]}, "mean_lookback": {"type": "integer", "minimum": 3, "maximum": 500}, "entry_z": {"type": "number", "exclusiveMinimum": 0}, "direction": {"enum": ["long", "short"]}, "volume_multiplier": {"type": "number", "minimum": 0}}, "allOf": [{"if": {"properties": {"rule": {"const": "close_breakout"}}}, "then": {"required": ["lookback_bars"]}}, {"if": {"properties": {"rule": {"const": "ema_pullback_confirmation"}}}, "then": {"required": ["fast_ema_period", "slow_ema_period", "pullback_distance_atr", "confirmation_rule"]}}, {"if": {"properties": {"rule": {"const": "zscore_mean_reversion"}}}, "then": {"required": ["mean_lookback", "entry_z"]}}]},

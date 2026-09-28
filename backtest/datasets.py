@@ -3,6 +3,7 @@ import csv
 import hashlib
 import json
 import math
+import re
 import shutil
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -111,15 +112,20 @@ def create_manifest(path, *, dataset_id, symbol, timeframe, timezone, source,
                     price_adjustment="unknown", version="1", raw_path=None,
                     source_timezone=None, timestamp_semantics="instant",
                     session_policy="unknown", asset_class="unknown",
+                    country="unknown",
                     column_mapping=None, quality_summary=None,
                     import_timestamp=None, adjustment_method=None,
                     provenance=None):
     if price_adjustment not in ADJUSTMENTS:
         raise ValueError("unknown price adjustment status")
+    if not isinstance(asset_class, str) or not asset_class:
+        raise ValueError("asset_class metadata is required")
+    if country != "unknown" and not re.fullmatch(r"[A-Z]{2}", country):
+        raise ValueError("country metadata must be an uppercase ISO alpha-2 code")
     bars = load_dataset(path, symbol=symbol, timeframe=timeframe,
                         timestamp_semantics=timestamp_semantics)
     processed_checksum=checksum(path)
-    manifest={"dataset_id": dataset_id, "dataset_version": version, "version": version, "symbol": symbol, "asset_class": asset_class, "timeframe": timeframe,
+    manifest={"dataset_id": dataset_id, "dataset_version": version, "version": version, "symbol": symbol, "asset_class": asset_class, "country": country, "timeframe": timeframe,
             "timezone": timezone, "timestamp_semantics": timestamp_semantics,
             "source": source, "price_adjustment": price_adjustment,
             "start": bars[0]["timestamp"], "end": bars[-1]["timestamp"], "rows": len(bars),
@@ -163,7 +169,7 @@ def import_dataset(input_path, *, dataset_id, symbol, timeframe, source_timezone
                    price_adjustment="unknown", version="1", column_mapping=None,
                    session_policy="unknown", asset_class="unknown", output_root=None,
                    expected_gap_seconds=None, timestamp_semantics="instant",
-                   adjustment_method=None, provenance=None):
+                   adjustment_method=None, provenance=None, country="unknown"):
     """Copy immutable raw input and normalize it under explicit timestamp semantics."""
     input_path=Path(input_path); root=Path(output_root or Path(__file__).resolve().parents[1]/"data")
     if not symbol: raise ValueError("explicit symbol metadata is required")
@@ -226,7 +232,7 @@ def import_dataset(input_path, *, dataset_id, symbol, timeframe, source_timezone
                  bars,timestamp_semantics=timestamp_semantics),
              "gap_interpretation":"informational_only_no_exchange_calendar"}
     canonical_timezone=None if timestamp_semantics == "session_date" else "UTC"
-    manifest=create_manifest(processed_path,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,timezone=canonical_timezone,source=source,price_adjustment=price_adjustment,version=version,raw_path=raw_path,source_timezone=source_timezone,timestamp_semantics=timestamp_semantics,session_policy=session_policy,asset_class=asset_class,column_mapping=mapping,quality_summary=quality,adjustment_method=adjustment_method,provenance=provenance)
+    manifest=create_manifest(processed_path,dataset_id=dataset_id,symbol=symbol,timeframe=timeframe,timezone=canonical_timezone,source=source,price_adjustment=price_adjustment,version=version,raw_path=raw_path,source_timezone=source_timezone,timestamp_semantics=timestamp_semantics,session_policy=session_policy,asset_class=asset_class,country=country,column_mapping=mapping,quality_summary=quality,adjustment_method=adjustment_method,provenance=provenance)
     manifest_path=manifest_dir/f"{dataset_id}_v{version}.json"; write_manifest(manifest_path,manifest)
     quality_path=manifest_dir/f"{dataset_id}_v{version}.quality.json"; quality_path.write_text(json.dumps(quality,indent=2)+"\n",encoding="utf-8")
     return {"raw_path":raw_path,"processed_path":processed_path,"manifest_path":manifest_path,"quality_path":quality_path,"manifest":manifest}

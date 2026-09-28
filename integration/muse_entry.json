@@ -13,6 +13,7 @@
   },
   "constraints": {
     "role": "Research / Hypothesis -> candidate strategy",
+    "supported_universe_modes": ["exact_symbol_list", "asset_class"],
     "workflow": [
       "Muse produces a candidate strategy file.",
       "The candidate is schema validated.",

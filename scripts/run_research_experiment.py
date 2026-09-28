@@ -5,6 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 from backtest.datasets import load_dataset
+from backtest.compatibility import strategy_dataset_compatibility
 from backtest.experiments import comparable_performance, experiment_fingerprint, load_experiment
 from backtest.strategy import fingerprint, load_strategy
 from scripts.run_backtest import build_result
@@ -18,8 +19,9 @@ def run_experiment(experiment_path, output_root=ROOT/"reports/experiments"):
     strategies=[]
     for reference in experiment["strategies"]:
         strategy_path=ROOT/"strategies"/reference["strategy_id"]/("v"+reference["strategy_version"])/"strategy.yaml"; strategy=load_strategy(strategy_path)
-        if dataset_manifest["symbol"] not in strategy["universe"]: raise ValueError("dataset symbol is outside strategy universe")
-        if dataset_manifest["timeframe"] != strategy["timeframe"]: raise ValueError("dataset timeframe is incompatible with strategy")
+        compatibility=strategy_dataset_compatibility(strategy,dataset_manifest)
+        if not compatibility["compatible"]:
+            raise ValueError("strategy/dataset incompatibility: " + "; ".join(compatibility["reasons"]))
         strategies.append((strategy_path,strategy))
     processed_path=_resolve(dataset_manifest["processed_path"]); bars=load_dataset(processed_path,symbol=dataset_manifest["symbol"],timeframe=dataset_manifest["timeframe"],timestamp_semantics=dataset_manifest.get("timestamp_semantics","instant"))
     start,end=experiment["research_window"]["start"],experiment["research_window"]["end"]; bars=[bar for bar in bars if start <= bar["timestamp"] <= end]

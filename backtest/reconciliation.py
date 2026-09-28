@@ -2,6 +2,7 @@
 import csv
 import hashlib
 import json
+import re
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
@@ -18,7 +19,7 @@ def validate_acquisition_config(config, *, installed_yfinance_version=None):
                 "start", "end_exclusive", "timestamp_semantics",
                 "download_semantics", "common_parameters", "profiles",
                 "acquisition_manifest_path", "canonical_column_mapping",
-                "session_policy", "asset_class"}
+                "session_policy", "asset_class", "country"}
     missing = required - set(config)
     if missing:
         raise ValueError(f"acquisition config missing: {sorted(missing)}")
@@ -43,6 +44,10 @@ def validate_acquisition_config(config, *, installed_yfinance_version=None):
         raise ValueError("canonical acquisition must set repair=false")
     if config["common_parameters"]["actions"] is not True:
         raise ValueError("canonical acquisition must preserve actions")
+    if not config["asset_class"] or config["asset_class"] == "unknown":
+        raise ValueError("canonical acquisition requires explicit asset_class")
+    if not re.fullmatch(r"[A-Z]{2}", config["country"]):
+        raise ValueError("canonical acquisition requires ISO alpha-2 country")
     if config["profiles"]["raw"]["dataset_id"] == config["profiles"]["auto_adjusted"]["dataset_id"]:
         raise ValueError("raw and adjusted dataset identities must differ")
     if config["download_semantics"] != {

@@ -118,6 +118,7 @@ def finalize_acquisition(config, *, root, downloaded_at=None):
             column_mapping=config["canonical_column_mapping"],
             session_policy=config["session_policy"],
             asset_class=config["asset_class"],
+            country=config["country"],
             output_root=root / "data",
             provenance={**shared_provenance, "provider_view": name,
                         "provider_artifact_sha256": checksum(path)},

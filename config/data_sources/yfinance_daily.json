@@ -34,7 +34,7 @@
     "raw": {
       "auto_adjust": false,
       "dataset_id": "aapl_1d_yf_raw",
-      "dataset_version": "1",
+      "dataset_version": "2",
       "artifact_path": "data/provider/yfinance/aapl_1d_yf_v1/provider_raw.csv",
       "price_adjustment": "raw",
       "adjustment_method": "yfinance_auto_adjust_false_provider_view"
@@ -42,7 +42,7 @@
     "auto_adjusted": {
       "auto_adjust": true,
       "dataset_id": "aapl_1d_yf_adjusted",
-      "dataset_version": "1",
+      "dataset_version": "2",
       "artifact_path": "data/provider/yfinance/aapl_1d_yf_v1/provider_auto_adjusted.csv",
       "price_adjustment": "provider_adjusted",
       "adjustment_method": "yfinance_auto_adjust"
@@ -58,5 +58,6 @@
     "volume": "Volume"
   },
   "session_policy": "Yahoo Finance daily session labels; no calendar repair",
-  "asset_class": "US equity"
+  "asset_class": "equity",
+  "country": "US"
 }

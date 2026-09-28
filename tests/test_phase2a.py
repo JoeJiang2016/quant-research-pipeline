@@ -1,8 +1,11 @@
 import csv
 from pathlib import Path
 import pytest
+import copy
 from backtest.datasets import create_manifest, load_dataset
+from backtest.engine.core import metrics, run
 from backtest.walk_forward import build_folds, stitched_oos_equity
+from scripts.run_walk_forward import synthetic_demo
 
 def write_csv(path, rows):
     with Path(path).open("w", newline="") as f:
@@ -33,3 +36,21 @@ def test_rolling_and_expanding_boundaries_do_not_leak():
 def test_stitched_curve_is_oos_only_and_ordered():
     assert stitched_oos_equity([[{"timestamp":"2","equity":1}], [{"timestamp":"3","equity":2}]])[0]["timestamp"] == "2"
     with pytest.raises(ValueError): stitched_oos_equity([[{"timestamp":"2","equity":1}], [{"timestamp":"2","equity":2}]])
+
+def test_synthetic_demo_has_deterministic_oos_trade_and_no_is_output(tmp_path):
+    path=tmp_path/"demo_test_data.csv"; synthetic_demo(path); first=path.read_bytes(); synthetic_demo(path); assert path.read_bytes() == first
+    bars=load_dataset(path,symbol="DEMO",timeframe="1d"); folds=build_folds(len(bars),train_bars=28,test_bars=24)
+    oos_results=[run(__import__("yaml").safe_load(Path("strategies/candidates/demo_breakout.yaml").read_text()),bars[f.test_start:f.test_end]) for f in folds]
+    trades=[trade for result in oos_results for trade in result["trades"]]
+    assert trades and all(bars[folds[0].test_start]["timestamp"] <= trade["entry_time"] for trade in trades)
+    assert [f.fold_id for f in folds] == ["fold_001","fold_002"]
+    stitched=stitched_oos_equity([result["equity_curve"] for result in oos_results])
+    assert {point["timestamp"] for point in stitched}.issubset({bar["timestamp"] for f in folds for bar in bars[f.test_start:f.test_end]})
+
+def test_higher_costs_do_not_improve_deterministic_net_result(tmp_path):
+    path=tmp_path/"demo_test_data.csv"; synthetic_demo(path); bars=load_dataset(path,symbol="DEMO",timeframe="1d"); strategy=__import__("yaml").safe_load(Path("strategies/candidates/demo_breakout.yaml").read_text()); oos=bars[28:52]
+    base=metrics(run(strategy,oos),strategy["risk"]["initial_equity"])["total_return"]
+    higher_commission=copy.deepcopy(strategy); higher_commission["execution"]["commission_per_trade"]*=2
+    higher_slippage=copy.deepcopy(strategy); higher_slippage["execution"]["slippage_bps"]*=2
+    assert metrics(run(higher_commission,oos),higher_commission["risk"]["initial_equity"])["total_return"] <= base
+    assert metrics(run(higher_slippage,oos),higher_slippage["risk"]["initial_equity"])["total_return"] <= base

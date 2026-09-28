@@ -1,0 +1,2347 @@
+{
+  "report_version": "1",
+  "classification": {
+    "fact": "controlled AAPL reconciliation only",
+    "evidence": "comparisons below",
+    "inference": "legacy_adjustment_remains_unknown",
+    "unknown": "final research adjustment policy"
+  },
+  "environment": {
+    "python_version": "3.10.11",
+    "python_build": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+    "yfinance_version": "1.7.0",
+    "pandas_version": "2.3.3",
+    "pyarrow_version": "17.0.0",
+    "os": "Windows-10-10.0.26200-SP0"
+  },
+  "contract": {
+    "contract_version": "1",
+    "provider": "Yahoo Finance",
+    "library": "yfinance",
+    "library_version": "1.7.0",
+    "function": "yfinance.download",
+    "cache_path": ".deps/yfinance-cache",
+    "environment": {
+      "python_version": "3.10.11",
+      "pandas_version": "2.3.3",
+      "pyarrow_version": "17.0.0",
+      "pyarrow_relevant": false,
+      "os": "Windows-10-10.0.26200-SP0"
+    },
+    "symbol": "AAPL",
+    "start": "2015-05-26",
+    "end_exclusive": "2025-10-17",
+    "timestamp_semantics": "session_date",
+    "download_semantics": {
+      "start_inclusive": true,
+      "end_exclusive": true,
+      "period": null
+    },
+    "common_parameters": {
+      "interval": "1d",
+      "back_adjust": false,
+      "actions": true,
+      "prepost": false,
+      "repair": false,
+      "progress": false,
+      "threads": false,
+      "multi_level_index": false,
+      "ignore_tz": true,
+      "group_by": "column",
+      "keepna": false,
+      "rounding": false,
+      "timeout": 30
+    },
+    "profiles": {
+      "raw": {
+        "auto_adjust": false,
+        "output_path": "data/raw/aapl_yfinance_raw_1.7.0.csv"
+      },
+      "auto_adjusted": {
+        "auto_adjust": true,
+        "output_path": "data/raw/aapl_yfinance_autoadjust_1.7.0.csv"
+      }
+    },
+    "comparison": {
+      "legacy_path": "C:/Projects/backtest_app/data/AAPL_1d.csv",
+      "fields": [
+        "Open",
+        "High",
+        "Low",
+        "Close",
+        "Volume"
+      ],
+      "absolute_tolerance": "1e-10",
+      "relative_tolerance": "1e-12"
+    }
+  },
+  "files": {
+    "legacy": {
+      "path": "C:\\Projects\\backtest_app\\data\\AAPL_1d.csv",
+      "sha256": "93e2c2bd5468a534a71c35a797f58f2c9cc11b886c3a6b11801d905e09f3a1c5"
+    },
+    "raw": {
+      "path": "C:\\Users\\jiang\\Documents\\Codex\\2026-09-27\\phase1-backtest\\data\\raw\\aapl_yfinance_raw_1.7.0.csv",
+      "sha256": "82b62ab9abd2a66af4e4597d15b1f27844c1822a2d5ea7adbb62ec899d2c8eb5"
+    },
+    "auto_adjusted": {
+      "path": "C:\\Users\\jiang\\Documents\\Codex\\2026-09-27\\phase1-backtest\\data\\raw\\aapl_yfinance_autoadjust_1.7.0.csv",
+      "sha256": "a77ae8e5dffd3e6991e88d5ad0d1b8463e05c59301c9371014f959f474d30d2f"
+    }
+  },
+  "legacy_vs_raw": {
+    "overlap_row_count": 2616,
+    "left_only_dates": [],
+    "right_only_dates": [],
+    "fields": {
+      "Open": {
+        "exact_match_count": 55,
+        "tolerance_match_count": 57,
+        "mismatch_count": 2559,
+        "max_absolute_difference": "3.60188661342397",
+        "max_relative_difference": "0.1041328798575713679120452597"
+      },
+      "High": {
+        "exact_match_count": 55,
+        "tolerance_match_count": 58,
+        "mismatch_count": 2558,
+        "max_absolute_difference": "3.61209617529776",
+        "max_relative_difference": "0.1041328798575711862441456894"
+      },
+      "Low": {
+        "exact_match_count": 56,
+        "tolerance_match_count": 58,
+        "mismatch_count": 2558,
+        "max_absolute_difference": "3.4633044601271",
+        "max_relative_difference": "0.1041328798575713662199456795"
+      },
+      "Close": {
+        "exact_match_count": 53,
+        "tolerance_match_count": 58,
+        "mismatch_count": 2558,
+        "max_absolute_difference": "3.51260375976563",
+        "max_relative_difference": "0.1041328798575713224618749431"
+      },
+      "Volume": {
+        "exact_match_count": 2563,
+        "tolerance_match_count": 2563,
+        "mismatch_count": 53,
+        "max_absolute_difference": "4616300",
+        "max_relative_difference": "0.02052759552772777044075614620"
+      }
+    },
+    "total_field_mismatches": 10286,
+    "mismatch_examples": [
+      {
+        "session_date": "2015-05-26",
+        "field": "Open",
+        "legacy": "29.69800025771494",
+        "candidate": "33.150001525878906",
+        "absolute_difference": "3.452001268163966",
+        "relative_difference": "0.1041327634772240961271957854"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Open",
+        "legacy": "29.19183927210583",
+        "candidate": "32.584999084472656",
+        "absolute_difference": "3.393159812366826",
+        "relative_difference": "0.1041325735063079467888562765"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Open",
+        "legacy": "29.532264831996294",
+        "candidate": "32.96500015258789",
+        "absolute_difference": "3.432735320591596",
+        "relative_difference": "0.1041327257607220717798505746"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Open",
+        "legacy": "29.39116401456765",
+        "candidate": "32.807498931884766",
+        "absolute_difference": "3.416334917317116",
+        "relative_difference": "0.1041327449071976588771998993"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Open",
+        "legacy": "29.178405049225105",
+        "candidate": "32.56999969482422",
+        "absolute_difference": "3.391594645599115",
+        "relative_difference": "0.1041324739753707082825746604"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Open",
+        "legacy": "29.08433336428329",
+        "candidate": "32.46500015258789",
+        "absolute_difference": "3.38066678830460",
+        "relative_difference": "0.1041326589377858399073961933"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Open",
+        "legacy": "29.26350878362112",
+        "candidate": "32.665000915527344",
+        "absolute_difference": "3.401492131906224",
+        "relative_difference": "0.1041326201307198183977086133"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Open",
+        "legacy": "29.021616410922068",
+        "candidate": "32.39500045776367",
+        "absolute_difference": "3.373384046841602",
+        "relative_difference": "0.1041328599837432272340040118"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Open",
+        "legacy": "29.003700938513425",
+        "candidate": "32.375",
+        "absolute_difference": "3.371299061486575",
+        "relative_difference": "0.1041327895439868725868725869"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Open",
+        "legacy": "28.869320578651514",
+        "candidate": "32.224998474121094",
+        "absolute_difference": "3.355677895469580",
+        "relative_difference": "0.1041327557599241408135995850"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "High",
+        "legacy": "29.767429421751487",
+        "candidate": "33.227500915527344",
+        "absolute_difference": "3.460071493775857",
+        "relative_difference": "0.1041327634772241255079916299"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "High",
+        "legacy": "29.62185522672724",
+        "candidate": "33.064998626708984",
+        "absolute_difference": "3.443143399981744",
+        "relative_difference": "0.1041325735063079289028367788"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "High",
+        "legacy": "29.55242102547569",
+        "candidate": "32.98749923706055",
+        "absolute_difference": "3.43507821158486",
+        "relative_difference": "0.1041327257607222286892383102"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "High",
+        "legacy": "29.440436986994744",
+        "candidate": "32.86249923706055",
+        "absolute_difference": "3.422062250065806",
+        "relative_difference": "0.1041327449071977216124071744"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "High",
+        "legacy": "29.42700842439548",
+        "candidate": "32.84749984741211",
+        "absolute_difference": "3.42049142301663",
+        "relative_difference": "0.1041324739753705604500100704"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "High",
+        "legacy": "29.26350751598827",
+        "candidate": "32.665000915527344",
+        "absolute_difference": "3.401493399539074",
+        "relative_difference": "0.1041326589377859280278888129"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "High",
+        "legacy": "29.32621922681494",
+        "candidate": "32.73500061035156",
+        "absolute_difference": "3.40878138353662",
+        "relative_difference": "0.1041326201307198062113261755"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "High",
+        "legacy": "29.24558319592613",
+        "candidate": "32.64500045776367",
+        "absolute_difference": "3.39941726183754",
+        "relative_difference": "0.1041328599837432944170785483"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "High",
+        "legacy": "29.046255177804035",
+        "candidate": "32.42250061035156",
+        "absolute_difference": "3.376245432547525",
+        "relative_difference": "0.1041327895439868749996429092"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "High",
+        "legacy": "28.93875316074848",
+        "candidate": "32.3025016784668",
+        "absolute_difference": "3.36374851771832",
+        "relative_difference": "0.1041327557599240512176676576"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Low",
+        "legacy": "28.91859330136727",
+        "candidate": "32.279998779296875",
+        "absolute_difference": "3.361405477929605",
+        "relative_difference": "0.1041327634772241261317644701"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Low",
+        "legacy": "29.126890387368768",
+        "candidate": "32.51250076293945",
+        "absolute_difference": "3.385610375570682",
+        "relative_difference": "0.1041325735063078398158531383"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Low",
+        "legacy": "29.36205128017731",
+        "candidate": "32.775001525878906",
+        "absolute_difference": "3.412950245701596",
+        "relative_difference": "0.1041327257607220850474864103"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Low",
+        "legacy": "29.09328774215381",
+        "candidate": "32.474998474121094",
+        "absolute_difference": "3.381710731967284",
+        "relative_difference": "0.1041327449071976251815791790"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Low",
+        "legacy": "29.12689362336844",
+        "candidate": "32.51250076293945",
+        "absolute_difference": "3.38560713957101",
+        "relative_difference": "0.1041324739753706290839344468"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Low",
+        "legacy": "28.96339277692348",
+        "candidate": "32.33000183105469",
+        "absolute_difference": "3.36660905413121",
+        "relative_difference": "0.1041326589377858481223880167"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Low",
+        "legacy": "29.09329179426973",
+        "candidate": "32.474998474121094",
+        "absolute_difference": "3.381706679851364",
+        "relative_difference": "0.1041326201307200149030526045"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Low",
+        "legacy": "28.871559075064773",
+        "candidate": "32.227500915527344",
+        "absolute_difference": "3.355941840462571",
+        "relative_difference": "0.1041328599837433954219075638"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Low",
+        "legacy": "28.748378920231943",
+        "candidate": "32.09000015258789",
+        "absolute_difference": "3.341621232355947",
+        "relative_difference": "0.1041327895439870477927377435"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Low",
+        "legacy": "28.405711056837685",
+        "candidate": "31.707500457763672",
+        "absolute_difference": "3.301789400925987",
+        "relative_difference": "0.1041327557599241298701562681"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Close",
+        "legacy": "29.030576705932617",
+        "candidate": "32.404998779296875",
+        "absolute_difference": "3.374422073364258",
+        "relative_difference": "0.1041327634772241256452200741"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Close",
+        "legacy": "29.572582244873047",
+        "candidate": "33.0099983215332",
+        "absolute_difference": "3.437416076660153",
+        "relative_difference": "0.1041325735063077985124880456"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Close",
+        "legacy": "29.514347076416016",
+        "candidate": "32.94499969482422",
+        "absolute_difference": "3.430652618408204",
+        "relative_difference": "0.1041327257607221067705103141"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Close",
+        "legacy": "29.178396224975582",
+        "candidate": "32.56999969482422",
+        "absolute_difference": "3.391603469848638",
+        "relative_difference": "0.1041327449071977172427108067"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Close",
+        "legacy": "29.236635208129883",
+        "candidate": "32.6349983215332",
+        "absolute_difference": "3.398363113403317",
+        "relative_difference": "0.1041324739753705337681464265"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Close",
+        "legacy": "29.10673141479492",
+        "candidate": "32.4900016784668",
+        "absolute_difference": "3.38327026367188",
+        "relative_difference": "0.1041326589377860627024570099"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Close",
+        "legacy": "29.14256477355957",
+        "candidate": "32.529998779296875",
+        "absolute_difference": "3.387434005737305",
+        "relative_difference": "0.1041326201307199449126266601"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Close",
+        "legacy": "28.97234344482422",
+        "candidate": "32.34000015258789",
+        "absolute_difference": "3.36765670776367",
+        "relative_difference": "0.1041328599837432472299067286"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Close",
+        "legacy": "28.81332778930664",
+        "candidate": "32.162498474121094",
+        "absolute_difference": "3.349170684814454",
+        "relative_difference": "0.1041327895439869720359760519"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Close",
+        "legacy": "28.62295913696289",
+        "candidate": "31.950000762939453",
+        "absolute_difference": "3.327041625976563",
+        "relative_difference": "0.1041327557599241089558967447"
+      },
+      {
+        "session_date": "2023-04-28",
+        "field": "Volume",
+        "legacy": "55209200",
+        "candidate": "55275900",
+        "absolute_difference": "66700",
+        "relative_difference": "0.001206674156368326883868014813"
+      },
+      {
+        "session_date": "2023-05-05",
+        "field": "Volume",
+        "legacy": "113316400",
+        "candidate": "113453200",
+        "absolute_difference": "136800",
+        "relative_difference": "0.001205783530125196997528496332"
+      },
+      {
+        "session_date": "2023-05-12",
+        "field": "Volume",
+        "legacy": "45497800",
+        "candidate": "45533100",
+        "absolute_difference": "35300",
+        "relative_difference": "0.0007752601953304299509587530829"
+      },
+      {
+        "session_date": "2023-05-19",
+        "field": "Volume",
+        "legacy": "55772400",
+        "candidate": "55809500",
+        "absolute_difference": "37100",
+        "relative_difference": "0.0006647613757514401669966582750"
+      },
+      {
+        "session_date": "2023-06-02",
+        "field": "Volume",
+        "legacy": "61945900",
+        "candidate": "61996900",
+        "absolute_difference": "51000",
+        "relative_difference": "0.0008226217762501028277220312629"
+      },
+      {
+        "session_date": "2023-06-09",
+        "field": "Volume",
+        "legacy": "48870700",
+        "candidate": "48900000",
+        "absolute_difference": "29300",
+        "relative_difference": "0.0005991820040899795501022494888"
+      },
+      {
+        "session_date": "2023-06-16",
+        "field": "Volume",
+        "legacy": "101235600",
+        "candidate": "101256200",
+        "absolute_difference": "20600",
+        "relative_difference": "0.0002034443322976765867176528450"
+      },
+      {
+        "session_date": "2023-06-23",
+        "field": "Volume",
+        "legacy": "53079300",
+        "candidate": "53117000",
+        "absolute_difference": "37700",
+        "relative_difference": "0.0007097539394167592296251670840"
+      },
+      {
+        "session_date": "2023-06-30",
+        "field": "Volume",
+        "legacy": "85069600",
+        "candidate": "85213200",
+        "absolute_difference": "143600",
+        "relative_difference": "0.001685184924401383823163547432"
+      },
+      {
+        "session_date": "2023-07-07",
+        "field": "Volume",
+        "legacy": "46778000",
+        "candidate": "46815000",
+        "absolute_difference": "37000",
+        "relative_difference": "0.0007903449749012068781373491402"
+      }
+    ],
+    "mismatch_examples_truncated": true,
+    "absolute_tolerance": "1E-10",
+    "relative_tolerance": "1E-12"
+  },
+  "legacy_vs_auto_adjusted": {
+    "overlap_row_count": 2616,
+    "left_only_dates": [],
+    "right_only_dates": [],
+    "fields": {
+      "Open": {
+        "exact_match_count": 0,
+        "tolerance_match_count": 0,
+        "mismatch_count": 2616,
+        "max_absolute_difference": "1.23884593187023",
+        "max_relative_difference": "0.004810567585984272460400152946"
+      },
+      "High": {
+        "exact_match_count": 0,
+        "tolerance_match_count": 0,
+        "mismatch_count": 2616,
+        "max_absolute_difference": "1.24801050154485",
+        "max_relative_difference": "0.004810567585984448726004348382"
+      },
+      "Low": {
+        "exact_match_count": 0,
+        "tolerance_match_count": 0,
+        "mismatch_count": 2616,
+        "max_absolute_difference": "1.23615895448628",
+        "max_relative_difference": "0.004810567585984508183068268284"
+      },
+      "Close": {
+        "exact_match_count": 0,
+        "tolerance_match_count": 0,
+        "mismatch_count": 2616,
+        "max_absolute_difference": "1.24282836914065",
+        "max_relative_difference": "0.004810567585984425668776945057"
+      },
+      "Volume": {
+        "exact_match_count": 2563,
+        "tolerance_match_count": 2563,
+        "mismatch_count": 53,
+        "max_absolute_difference": "4616300",
+        "max_relative_difference": "0.02052759552772777044075614620"
+      }
+    },
+    "total_field_mismatches": 10517,
+    "mismatch_examples": [
+      {
+        "session_date": "2015-05-26",
+        "field": "Open",
+        "legacy": "29.69800025771494",
+        "candidate": "29.555156861273023",
+        "absolute_difference": "0.142843396441917",
+        "relative_difference": "0.004809865822693202171747954876"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Open",
+        "legacy": "29.19183927210583",
+        "candidate": "29.05143195800268",
+        "absolute_difference": "0.14040731410315",
+        "relative_difference": "0.004809813893340929922466850769"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Open",
+        "legacy": "29.532264831996294",
+        "candidate": "29.3902280484284",
+        "absolute_difference": "0.142036783567894",
+        "relative_difference": "0.004809545911087941857487758693"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Open",
+        "legacy": "29.39116401456765",
+        "candidate": "29.249799849537247",
+        "absolute_difference": "0.141364165030403",
+        "relative_difference": "0.004809750473316954664244814033"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Open",
+        "legacy": "29.178405049225105",
+        "candidate": "29.038062033435267",
+        "absolute_difference": "0.140343015789838",
+        "relative_difference": "0.004809824784907669556691585807"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Open",
+        "legacy": "29.08433336428329",
+        "candidate": "28.944443612069538",
+        "absolute_difference": "0.139889752213752",
+        "relative_difference": "0.004809797441860645855121388081"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Open",
+        "legacy": "29.26350878362112",
+        "candidate": "29.122757926616966",
+        "absolute_difference": "0.140750857004154",
+        "relative_difference": "0.004809773771316606688926590477"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Open",
+        "legacy": "29.021616410922068",
+        "candidate": "28.882028527183504",
+        "absolute_difference": "0.139587883738564",
+        "relative_difference": "0.004809790115137458205006832498"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Open",
+        "legacy": "29.003700938513425",
+        "candidate": "28.864206919211796",
+        "absolute_difference": "0.139494019301629",
+        "relative_difference": "0.004809524811931767192855956500"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Open",
+        "legacy": "28.869320578651514",
+        "candidate": "28.73046896160397",
+        "absolute_difference": "0.138851617047544",
+        "relative_difference": "0.004809660021934252226324407391"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "High",
+        "legacy": "29.767429421751487",
+        "candidate": "29.624252080346373",
+        "absolute_difference": "0.143177341405114",
+        "relative_difference": "0.004809865822693183781799610415"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "High",
+        "legacy": "29.62185522672724",
+        "candidate": "29.479379615911192",
+        "absolute_difference": "0.142475610816048",
+        "relative_difference": "0.004809813893340986614415056925"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "High",
+        "legacy": "29.55242102547569",
+        "candidate": "29.41028729976987",
+        "absolute_difference": "0.14213372570582",
+        "relative_difference": "0.004809545911087741316637345530"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "High",
+        "legacy": "29.440436986994744",
+        "candidate": "29.298835831261886",
+        "absolute_difference": "0.141601155732858",
+        "relative_difference": "0.004809750473317024343137605965"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "High",
+        "legacy": "29.42700842439548",
+        "candidate": "29.285469669930134",
+        "absolute_difference": "0.141538754465346",
+        "relative_difference": "0.004809824784907731757614855884"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "High",
+        "legacy": "29.26350751598827",
+        "candidate": "29.122755972398",
+        "absolute_difference": "0.14075154359027",
+        "relative_difference": "0.004809797441860640248070836394"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "High",
+        "legacy": "29.32621922681494",
+        "candidate": "29.185166746765926",
+        "absolute_difference": "0.141052480049014",
+        "relative_difference": "0.004809773771316563197091994622"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "High",
+        "legacy": "29.24558319592613",
+        "candidate": "29.104918078958935",
+        "absolute_difference": "0.140665116967195",
+        "relative_difference": "0.004809790115137435852411209423"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "High",
+        "legacy": "29.046255177804035",
+        "candidate": "28.90655649283269",
+        "absolute_difference": "0.139698684971345",
+        "relative_difference": "0.004809524811931592627206043840"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "High",
+        "legacy": "28.93875316074848",
+        "candidate": "28.799567596586602",
+        "absolute_difference": "0.139185564161878",
+        "relative_difference": "0.004809660021934340507252959506"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Low",
+        "legacy": "28.91859330136727",
+        "candidate": "28.77949874780666",
+        "absolute_difference": "0.13909455356061",
+        "relative_difference": "0.004809865822693167262620838241"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Low",
+        "legacy": "29.126890387368768",
+        "candidate": "28.986795465313783",
+        "absolute_difference": "0.140094922054985",
+        "relative_difference": "0.004809813893340940890951156238"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Low",
+        "legacy": "29.36205128017731",
+        "candidate": "29.220833146501583",
+        "absolute_difference": "0.141218133675727",
+        "relative_difference": "0.004809545911087797113012365214"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Low",
+        "legacy": "29.09328774215381",
+        "candidate": "28.95335628766564",
+        "absolute_difference": "0.13993145448817",
+        "relative_difference": "0.004809750473316932565183685131"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Low",
+        "legacy": "29.12689362336844",
+        "candidate": "28.986798368511394",
+        "absolute_difference": "0.140095254857046",
+        "relative_difference": "0.004809824784907646248392680059"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Low",
+        "legacy": "28.96339277692348",
+        "candidate": "28.824084724437427",
+        "absolute_difference": "0.139308052486053",
+        "relative_difference": "0.004809797441860692054801228170"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Low",
+        "legacy": "29.09329179426973",
+        "candidate": "28.953359642476396",
+        "absolute_difference": "0.139932151793334",
+        "relative_difference": "0.004809773771316427739145055644"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Low",
+        "legacy": "28.871559075064773",
+        "candidate": "28.73269293561692",
+        "absolute_difference": "0.138866139447853",
+        "relative_difference": "0.004809790115137433237656640232"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Low",
+        "legacy": "28.748378920231943",
+        "candidate": "28.61011287851228",
+        "absolute_difference": "0.138266041719663",
+        "relative_difference": "0.004809524811931464008494645946"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Low",
+        "legacy": "28.405711056837685",
+        "candidate": "28.269089243973",
+        "absolute_difference": "0.136621812864685",
+        "relative_difference": "0.004809660021934147633770329708"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Close",
+        "legacy": "29.030576705932617",
+        "candidate": "28.89094352722168",
+        "absolute_difference": "0.139633178710937",
+        "relative_difference": "0.004809865822693143682969676245"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Close",
+        "legacy": "29.572582244873047",
+        "candidate": "29.430343627929688",
+        "absolute_difference": "0.142238616943359",
+        "relative_difference": "0.004809813893340974299594895478"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Close",
+        "legacy": "29.514347076416016",
+        "candidate": "29.37239646911621",
+        "absolute_difference": "0.141950607299806",
+        "relative_difference": "0.004809545911087907948821359618"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Close",
+        "legacy": "29.178396224975582",
+        "candidate": "29.038055419921875",
+        "absolute_difference": "0.140340805053707",
+        "relative_difference": "0.004809750473316990693756248568"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Close",
+        "legacy": "29.236635208129883",
+        "candidate": "29.096012115478516",
+        "absolute_difference": "0.140623092651367",
+        "relative_difference": "0.004809824784907658841951845670"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Close",
+        "legacy": "29.10673141479492",
+        "candidate": "28.966733932495117",
+        "absolute_difference": "0.139997482299803",
+        "relative_difference": "0.004809797441860559843949649597"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Close",
+        "legacy": "29.14256477355957",
+        "candidate": "29.002395629882812",
+        "absolute_difference": "0.140169143676758",
+        "relative_difference": "0.004809773771316465828578307651"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Close",
+        "legacy": "28.97234344482422",
+        "candidate": "28.832992553710938",
+        "absolute_difference": "0.139350891113282",
+        "relative_difference": "0.004809790115137421356301295769"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Close",
+        "legacy": "28.81332778930664",
+        "candidate": "28.67474937438965",
+        "absolute_difference": "0.13857841491699",
+        "relative_difference": "0.004809524811931649916637446784"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Close",
+        "legacy": "28.62295913696289",
+        "candidate": "28.485292434692383",
+        "absolute_difference": "0.137666702270507",
+        "relative_difference": "0.004809660021934212443878596682"
+      },
+      {
+        "session_date": "2023-04-28",
+        "field": "Volume",
+        "legacy": "55209200",
+        "candidate": "55275900",
+        "absolute_difference": "66700",
+        "relative_difference": "0.001206674156368326883868014813"
+      },
+      {
+        "session_date": "2023-05-05",
+        "field": "Volume",
+        "legacy": "113316400",
+        "candidate": "113453200",
+        "absolute_difference": "136800",
+        "relative_difference": "0.001205783530125196997528496332"
+      },
+      {
+        "session_date": "2023-05-12",
+        "field": "Volume",
+        "legacy": "45497800",
+        "candidate": "45533100",
+        "absolute_difference": "35300",
+        "relative_difference": "0.0007752601953304299509587530829"
+      },
+      {
+        "session_date": "2023-05-19",
+        "field": "Volume",
+        "legacy": "55772400",
+        "candidate": "55809500",
+        "absolute_difference": "37100",
+        "relative_difference": "0.0006647613757514401669966582750"
+      },
+      {
+        "session_date": "2023-06-02",
+        "field": "Volume",
+        "legacy": "61945900",
+        "candidate": "61996900",
+        "absolute_difference": "51000",
+        "relative_difference": "0.0008226217762501028277220312629"
+      },
+      {
+        "session_date": "2023-06-09",
+        "field": "Volume",
+        "legacy": "48870700",
+        "candidate": "48900000",
+        "absolute_difference": "29300",
+        "relative_difference": "0.0005991820040899795501022494888"
+      },
+      {
+        "session_date": "2023-06-16",
+        "field": "Volume",
+        "legacy": "101235600",
+        "candidate": "101256200",
+        "absolute_difference": "20600",
+        "relative_difference": "0.0002034443322976765867176528450"
+      },
+      {
+        "session_date": "2023-06-23",
+        "field": "Volume",
+        "legacy": "53079300",
+        "candidate": "53117000",
+        "absolute_difference": "37700",
+        "relative_difference": "0.0007097539394167592296251670840"
+      },
+      {
+        "session_date": "2023-06-30",
+        "field": "Volume",
+        "legacy": "85069600",
+        "candidate": "85213200",
+        "absolute_difference": "143600",
+        "relative_difference": "0.001685184924401383823163547432"
+      },
+      {
+        "session_date": "2023-07-07",
+        "field": "Volume",
+        "legacy": "46778000",
+        "candidate": "46815000",
+        "absolute_difference": "37000",
+        "relative_difference": "0.0007903449749012068781373491402"
+      }
+    ],
+    "mismatch_examples_truncated": true,
+    "absolute_tolerance": "1E-10",
+    "relative_tolerance": "1E-12"
+  },
+  "corporate_actions": {
+    "columns_present": [
+      "Dividends",
+      "Stock Splits"
+    ],
+    "split_event_count": 1,
+    "dividend_event_count": 41,
+    "capital_gain_event_count": 0,
+    "events": [
+      {
+        "session_date": "2015-08-06",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      {
+        "session_date": "2015-11-05",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      {
+        "session_date": "2016-02-04",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      {
+        "session_date": "2016-05-05",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      {
+        "session_date": "2016-08-04",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      {
+        "session_date": "2016-11-03",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      {
+        "session_date": "2017-02-09",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      {
+        "session_date": "2017-05-11",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      {
+        "session_date": "2017-08-10",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      {
+        "session_date": "2017-11-10",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      {
+        "session_date": "2018-02-09",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      {
+        "session_date": "2018-05-11",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      {
+        "session_date": "2018-08-10",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      {
+        "session_date": "2018-11-08",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      {
+        "session_date": "2019-02-08",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      {
+        "session_date": "2019-05-10",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      {
+        "session_date": "2019-08-09",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      {
+        "session_date": "2019-11-07",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      {
+        "session_date": "2020-02-07",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      {
+        "session_date": "2020-05-08",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      {
+        "session_date": "2020-08-07",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      {
+        "session_date": "2020-11-06",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      {
+        "session_date": "2021-02-05",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      {
+        "session_date": "2021-05-07",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      {
+        "session_date": "2021-08-06",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      {
+        "session_date": "2021-11-05",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      {
+        "session_date": "2022-02-04",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      {
+        "session_date": "2022-05-06",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      {
+        "session_date": "2022-08-05",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      {
+        "session_date": "2022-11-04",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      {
+        "session_date": "2023-02-10",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      {
+        "session_date": "2023-05-12",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      {
+        "session_date": "2023-08-11",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      {
+        "session_date": "2023-11-10",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      {
+        "session_date": "2024-02-09",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      {
+        "session_date": "2024-05-10",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      {
+        "session_date": "2024-08-12",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      {
+        "session_date": "2024-11-08",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      {
+        "session_date": "2025-02-10",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      {
+        "session_date": "2025-05-12",
+        "field": "Dividends",
+        "value": "0.26"
+      },
+      {
+        "session_date": "2025-08-11",
+        "field": "Dividends",
+        "value": "0.26"
+      },
+      {
+        "session_date": "2020-08-31",
+        "field": "Stock Splits",
+        "value": "4.0"
+      }
+    ]
+  },
+  "corporate_action_windows": [
+    {
+      "event": {
+        "session_date": "2015-08-06",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      "window_session_dates": [
+        "2015-08-04",
+        "2015-08-05",
+        "2015-08-06",
+        "2015-08-07",
+        "2015-08-10"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 58.884490580238904,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.50203379058728,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2015-11-05",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      "window_session_dates": [
+        "2015-11-03",
+        "2015-11-04",
+        "2015-11-05",
+        "2015-11-06",
+        "2015-11-09"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 59.44099843147977,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.63820547859466,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2016-02-04",
+        "field": "Dividends",
+        "value": "0.13"
+      },
+      "window_session_dates": [
+        "2016-02-02",
+        "2016-02-03",
+        "2016-02-04",
+        "2016-02-05",
+        "2016-02-08"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 44.438058202034554,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.0774760423795655,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2016-05-05",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      "window_session_dates": [
+        "2016-05-03",
+        "2016-05-04",
+        "2016-05-05",
+        "2016-05-06",
+        "2016-05-09"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 41.271246435796186,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.0565729904614045,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2016-08-04",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      "window_session_dates": [
+        "2016-08-02",
+        "2016-08-03",
+        "2016-08-04",
+        "2016-08-05",
+        "2016-08-08"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 43.95704994819548,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.3421028500808205,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2016-11-03",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      "window_session_dates": [
+        "2016-11-01",
+        "2016-11-02",
+        "2016-11-03",
+        "2016-11-04",
+        "2016-11-07"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 43.18460259936654,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.4543084883788104,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2017-02-09",
+        "field": "Dividends",
+        "value": "0.1425"
+      },
+      "window_session_dates": [
+        "2017-02-07",
+        "2017-02-08",
+        "2017-02-09",
+        "2017-02-10",
+        "2017-02-13"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 48.675307895438856,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 2.942217718946882,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2017-05-11",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      "window_session_dates": [
+        "2017-05-09",
+        "2017-05-10",
+        "2017-05-11",
+        "2017-05-12",
+        "2017-05-15"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 53.876868159376016,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 3.453037939898124,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2017-08-10",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      "window_session_dates": [
+        "2017-08-08",
+        "2017-08-09",
+        "2017-08-10",
+        "2017-08-11",
+        "2017-08-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 52.483817184327584,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 3.566782563943107,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2017-11-10",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      "window_session_dates": [
+        "2017-11-08",
+        "2017-11-09",
+        "2017-11-10",
+        "2017-11-13",
+        "2017-11-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 54.55959924779508,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 3.928851661042785,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2018-02-09",
+        "field": "Dividends",
+        "value": "0.1575"
+      },
+      "window_session_dates": [
+        "2018-02-07",
+        "2018-02-08",
+        "2018-02-09",
+        "2018-02-12",
+        "2018-02-13"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 47.07427805678901,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 3.6134646757887126,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2018-05-11",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      "window_session_dates": [
+        "2018-05-09",
+        "2018-05-10",
+        "2018-05-11",
+        "2018-05-14",
+        "2018-05-15"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 51.90670667576373,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 4.268989952446418,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2018-08-10",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      "window_session_dates": [
+        "2018-08-08",
+        "2018-08-09",
+        "2018-08-10",
+        "2018-08-13",
+        "2018-08-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 53.96850316726442,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 4.751193917974568,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2018-11-08",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      "window_session_dates": [
+        "2018-11-06",
+        "2018-11-07",
+        "2018-11-08",
+        "2018-11-09",
+        "2018-11-12"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 49.501403088243094,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 4.671221414263819,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2019-02-08",
+        "field": "Dividends",
+        "value": "0.1825"
+      },
+      "window_session_dates": [
+        "2019-02-06",
+        "2019-02-07",
+        "2019-02-08",
+        "2019-02-11",
+        "2019-02-12"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 38.313627051437415,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 3.9352819394436622,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2019-05-10",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      "window_session_dates": [
+        "2019-05-08",
+        "2019-05-09",
+        "2019-05-10",
+        "2019-05-13",
+        "2019-05-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 39.83093773627765,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 4.490175168178858,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2019-08-09",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      "window_session_dates": [
+        "2019-08-07",
+        "2019-08-08",
+        "2019-08-09",
+        "2019-08-12",
+        "2019-08-13"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 37.4025316958667,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 4.657105359370817,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2019-11-07",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      "window_session_dates": [
+        "2019-11-05",
+        "2019-11-06",
+        "2019-11-07",
+        "2019-11-08",
+        "2019-11-11"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 43.94333711258699,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 6.004870234906839,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2020-02-07",
+        "field": "Dividends",
+        "value": "0.1925"
+      },
+      "window_session_dates": [
+        "2020-02-05",
+        "2020-02-06",
+        "2020-02-07",
+        "2020-02-10",
+        "2020-02-11"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 50.543196182978676,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 7.480093924303546,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2020-05-08",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      "window_session_dates": [
+        "2020-05-06",
+        "2020-05-07",
+        "2020-05-08",
+        "2020-05-11",
+        "2020-05-12"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 44.564350384016905,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 7.18660432730546,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2020-08-07",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      "window_session_dates": [
+        "2020-08-05",
+        "2020-08-06",
+        "2020-08-07",
+        "2020-08-10",
+        "2020-08-11"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 59.86865046537572,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 10.426568866530715,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2020-11-06",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      "window_session_dates": [
+        "2020-11-04",
+        "2020-11-05",
+        "2020-11-06",
+        "2020-11-09",
+        "2020-11-10"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 58.91209843234169,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 10.976033104624264,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2021-02-05",
+        "field": "Dividends",
+        "value": "0.205"
+      },
+      "window_session_dates": [
+        "2021-02-03",
+        "2021-02-04",
+        "2021-02-05",
+        "2021-02-08",
+        "2021-02-09"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 64.32791802832085,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 12.789513788459146,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2021-05-07",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      "window_session_dates": [
+        "2021-05-05",
+        "2021-05-06",
+        "2021-05-07",
+        "2021-05-10",
+        "2021-05-11"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 56.51133342146002,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 12.055823736521546,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2021-08-06",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      "window_session_dates": [
+        "2021-08-04",
+        "2021-08-05",
+        "2021-08-06",
+        "2021-08-09",
+        "2021-08-10"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 60.0977972872615,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 13.809090163815654,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2021-11-05",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      "window_session_dates": [
+        "2021-11-03",
+        "2021-11-04",
+        "2021-11-05",
+        "2021-11-08",
+        "2021-11-09"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 57.56746128267565,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 14.252523254023345,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2022-02-04",
+        "field": "Dividends",
+        "value": "0.22"
+      },
+      "window_session_dates": [
+        "2022-02-02",
+        "2022-02-03",
+        "2022-02-04",
+        "2022-02-07",
+        "2022-02-08"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 61.497780545705865,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 16.380555155246213,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2022-05-06",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      "window_session_dates": [
+        "2022-05-04",
+        "2022-05-05",
+        "2022-05-06",
+        "2022-05-09",
+        "2022-05-10"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 51.634305351455765,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 14.912531379321592,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2022-08-05",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      "window_session_dates": [
+        "2022-08-03",
+        "2022-08-04",
+        "2022-08-05",
+        "2022-08-08",
+        "2022-08-09"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 49.345381732774,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 15.617911029436755,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2022-11-04",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      "window_session_dates": [
+        "2022-11-02",
+        "2022-11-03",
+        "2022-11-04",
+        "2022-11-07",
+        "2022-11-08"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 37.95870560363815,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 13.385379564486726,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2023-02-10",
+        "field": "Dividends",
+        "value": "0.23"
+      },
+      "window_session_dates": [
+        "2023-02-08",
+        "2023-02-09",
+        "2023-02-10",
+        "2023-02-13",
+        "2023-02-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 36.15487052279312,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 14.457261460578223,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2023-05-12",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      "window_session_dates": [
+        "2023-05-10",
+        "2023-05-11",
+        "2023-05-12",
+        "2023-05-15",
+        "2023-05-16"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 36.16627074532033,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 16.4541249360054,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2023-08-11",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      "window_session_dates": [
+        "2023-08-09",
+        "2023-08-10",
+        "2023-08-11",
+        "2023-08-14",
+        "2023-08-15"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 32.5353688161984,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 17.01639160959442,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2023-11-10",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      "window_session_dates": [
+        "2023-11-08",
+        "2023-11-09",
+        "2023-11-10",
+        "2023-11-13",
+        "2023-11-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 28.752873080619906,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 17.62187396967579,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2024-02-09",
+        "field": "Dividends",
+        "value": "0.24"
+      },
+      "window_session_dates": [
+        "2024-02-07",
+        "2024-02-08",
+        "2024-02-09",
+        "2024-02-12",
+        "2024-02-13"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 24.498292752521877,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 17.97317924795894,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2024-05-10",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      "window_session_dates": [
+        "2024-05-08",
+        "2024-05-09",
+        "2024-05-10",
+        "2024-05-13",
+        "2024-05-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 19.16036971399683,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 17.66660225374713,
+      "closer_to": "auto_adjusted"
+    },
+    {
+      "event": {
+        "session_date": "2024-08-12",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      "window_session_dates": [
+        "2024-08-08",
+        "2024-08-09",
+        "2024-08-12",
+        "2024-08-13",
+        "2024-08-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 17.173477042291978,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 20.79897257342884,
+      "closer_to": "raw"
+    },
+    {
+      "event": {
+        "session_date": "2024-11-08",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      "window_session_dates": [
+        "2024-11-06",
+        "2024-11-07",
+        "2024-11-08",
+        "2024-11-11",
+        "2024-11-12"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 12.800584093204634,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 21.585293761529044,
+      "closer_to": "raw"
+    },
+    {
+      "event": {
+        "session_date": "2025-02-10",
+        "field": "Dividends",
+        "value": "0.25"
+      },
+      "window_session_dates": [
+        "2025-02-06",
+        "2025-02-07",
+        "2025-02-10",
+        "2025-02-11",
+        "2025-02-12"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 8.086620942729667,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 22.20720650648491,
+      "closer_to": "raw"
+    },
+    {
+      "event": {
+        "session_date": "2025-05-12",
+        "field": "Dividends",
+        "value": "0.26"
+      },
+      "window_session_dates": [
+        "2025-05-08",
+        "2025-05-09",
+        "2025-05-12",
+        "2025-05-13",
+        "2025-05-14"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 2.0764489962042205,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 19.808380045841147,
+      "closer_to": "raw"
+    },
+    {
+      "event": {
+        "session_date": "2025-08-11",
+        "field": "Dividends",
+        "value": "0.26"
+      },
+      "window_session_dates": [
+        "2025-08-07",
+        "2025-08-08",
+        "2025-08-11",
+        "2025-08-12",
+        "2025-08-13"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 2.0141971176372238,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 16.670462285162643,
+      "closer_to": "raw"
+    },
+    {
+      "event": {
+        "session_date": "2020-08-31",
+        "field": "Stock Splits",
+        "value": "4.0"
+      },
+      "window_session_dates": [
+        "2020-08-27",
+        "2020-08-28",
+        "2020-08-31",
+        "2020-09-01",
+        "2020-09-02"
+      ],
+      "legacy_vs_raw_total_absolute_ohlc_difference": 67.67535309017269,
+      "legacy_vs_auto_adjusted_total_absolute_ohlc_difference": 12.10860700607735,
+      "closer_to": "auto_adjusted"
+    }
+  ],
+  "ohlc_closeness": {
+    "comparison_count": 10464,
+    "raw_closer_count": 1440,
+    "auto_adjusted_closer_count": 9024,
+    "equal_distance_count": 0,
+    "raw_total_absolute_difference": "22082.386966421218044",
+    "auto_adjusted_total_absolute_difference": "5241.705059565408591"
+  },
+  "classification_rule_evidence": {
+    "overlap_coverage": 1.0,
+    "auto_adjusted_closer_share": 0.8623853211009175,
+    "corporate_action_windows_count": 42,
+    "corporate_action_windows_closer_to_auto_adjusted": 37
+  },
+  "provider_revision_evidence": {
+    "possible_provider_revision": true,
+    "fact": "Controlled files cover the same 2,616 session dates as legacy.",
+    "evidence": "Systematic OHLC differences and 53 revised Volume rows are recorded in both comparisons.",
+    "examples": [
+      {
+        "session_date": "2015-05-26",
+        "field": "Open",
+        "legacy": "29.69800025771494",
+        "candidate": "29.555156861273023",
+        "absolute_difference": "0.142843396441917",
+        "relative_difference": "0.004809865822693202171747954876"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Open",
+        "legacy": "29.19183927210583",
+        "candidate": "29.05143195800268",
+        "absolute_difference": "0.14040731410315",
+        "relative_difference": "0.004809813893340929922466850769"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Open",
+        "legacy": "29.532264831996294",
+        "candidate": "29.3902280484284",
+        "absolute_difference": "0.142036783567894",
+        "relative_difference": "0.004809545911087941857487758693"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Open",
+        "legacy": "29.39116401456765",
+        "candidate": "29.249799849537247",
+        "absolute_difference": "0.141364165030403",
+        "relative_difference": "0.004809750473316954664244814033"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Open",
+        "legacy": "29.178405049225105",
+        "candidate": "29.038062033435267",
+        "absolute_difference": "0.140343015789838",
+        "relative_difference": "0.004809824784907669556691585807"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Open",
+        "legacy": "29.08433336428329",
+        "candidate": "28.944443612069538",
+        "absolute_difference": "0.139889752213752",
+        "relative_difference": "0.004809797441860645855121388081"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Open",
+        "legacy": "29.26350878362112",
+        "candidate": "29.122757926616966",
+        "absolute_difference": "0.140750857004154",
+        "relative_difference": "0.004809773771316606688926590477"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Open",
+        "legacy": "29.021616410922068",
+        "candidate": "28.882028527183504",
+        "absolute_difference": "0.139587883738564",
+        "relative_difference": "0.004809790115137458205006832498"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Open",
+        "legacy": "29.003700938513425",
+        "candidate": "28.864206919211796",
+        "absolute_difference": "0.139494019301629",
+        "relative_difference": "0.004809524811931767192855956500"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Open",
+        "legacy": "28.869320578651514",
+        "candidate": "28.73046896160397",
+        "absolute_difference": "0.138851617047544",
+        "relative_difference": "0.004809660021934252226324407391"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "High",
+        "legacy": "29.767429421751487",
+        "candidate": "29.624252080346373",
+        "absolute_difference": "0.143177341405114",
+        "relative_difference": "0.004809865822693183781799610415"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "High",
+        "legacy": "29.62185522672724",
+        "candidate": "29.479379615911192",
+        "absolute_difference": "0.142475610816048",
+        "relative_difference": "0.004809813893340986614415056925"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "High",
+        "legacy": "29.55242102547569",
+        "candidate": "29.41028729976987",
+        "absolute_difference": "0.14213372570582",
+        "relative_difference": "0.004809545911087741316637345530"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "High",
+        "legacy": "29.440436986994744",
+        "candidate": "29.298835831261886",
+        "absolute_difference": "0.141601155732858",
+        "relative_difference": "0.004809750473317024343137605965"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "High",
+        "legacy": "29.42700842439548",
+        "candidate": "29.285469669930134",
+        "absolute_difference": "0.141538754465346",
+        "relative_difference": "0.004809824784907731757614855884"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "High",
+        "legacy": "29.26350751598827",
+        "candidate": "29.122755972398",
+        "absolute_difference": "0.14075154359027",
+        "relative_difference": "0.004809797441860640248070836394"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "High",
+        "legacy": "29.32621922681494",
+        "candidate": "29.185166746765926",
+        "absolute_difference": "0.141052480049014",
+        "relative_difference": "0.004809773771316563197091994622"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "High",
+        "legacy": "29.24558319592613",
+        "candidate": "29.104918078958935",
+        "absolute_difference": "0.140665116967195",
+        "relative_difference": "0.004809790115137435852411209423"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "High",
+        "legacy": "29.046255177804035",
+        "candidate": "28.90655649283269",
+        "absolute_difference": "0.139698684971345",
+        "relative_difference": "0.004809524811931592627206043840"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "High",
+        "legacy": "28.93875316074848",
+        "candidate": "28.799567596586602",
+        "absolute_difference": "0.139185564161878",
+        "relative_difference": "0.004809660021934340507252959506"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Low",
+        "legacy": "28.91859330136727",
+        "candidate": "28.77949874780666",
+        "absolute_difference": "0.13909455356061",
+        "relative_difference": "0.004809865822693167262620838241"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Low",
+        "legacy": "29.126890387368768",
+        "candidate": "28.986795465313783",
+        "absolute_difference": "0.140094922054985",
+        "relative_difference": "0.004809813893340940890951156238"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Low",
+        "legacy": "29.36205128017731",
+        "candidate": "29.220833146501583",
+        "absolute_difference": "0.141218133675727",
+        "relative_difference": "0.004809545911087797113012365214"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Low",
+        "legacy": "29.09328774215381",
+        "candidate": "28.95335628766564",
+        "absolute_difference": "0.13993145448817",
+        "relative_difference": "0.004809750473316932565183685131"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Low",
+        "legacy": "29.12689362336844",
+        "candidate": "28.986798368511394",
+        "absolute_difference": "0.140095254857046",
+        "relative_difference": "0.004809824784907646248392680059"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Low",
+        "legacy": "28.96339277692348",
+        "candidate": "28.824084724437427",
+        "absolute_difference": "0.139308052486053",
+        "relative_difference": "0.004809797441860692054801228170"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Low",
+        "legacy": "29.09329179426973",
+        "candidate": "28.953359642476396",
+        "absolute_difference": "0.139932151793334",
+        "relative_difference": "0.004809773771316427739145055644"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Low",
+        "legacy": "28.871559075064773",
+        "candidate": "28.73269293561692",
+        "absolute_difference": "0.138866139447853",
+        "relative_difference": "0.004809790115137433237656640232"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Low",
+        "legacy": "28.748378920231943",
+        "candidate": "28.61011287851228",
+        "absolute_difference": "0.138266041719663",
+        "relative_difference": "0.004809524811931464008494645946"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Low",
+        "legacy": "28.405711056837685",
+        "candidate": "28.269089243973",
+        "absolute_difference": "0.136621812864685",
+        "relative_difference": "0.004809660021934147633770329708"
+      },
+      {
+        "session_date": "2015-05-26",
+        "field": "Close",
+        "legacy": "29.030576705932617",
+        "candidate": "28.89094352722168",
+        "absolute_difference": "0.139633178710937",
+        "relative_difference": "0.004809865822693143682969676245"
+      },
+      {
+        "session_date": "2015-05-27",
+        "field": "Close",
+        "legacy": "29.572582244873047",
+        "candidate": "29.430343627929688",
+        "absolute_difference": "0.142238616943359",
+        "relative_difference": "0.004809813893340974299594895478"
+      },
+      {
+        "session_date": "2015-05-28",
+        "field": "Close",
+        "legacy": "29.514347076416016",
+        "candidate": "29.37239646911621",
+        "absolute_difference": "0.141950607299806",
+        "relative_difference": "0.004809545911087907948821359618"
+      },
+      {
+        "session_date": "2015-05-29",
+        "field": "Close",
+        "legacy": "29.178396224975582",
+        "candidate": "29.038055419921875",
+        "absolute_difference": "0.140340805053707",
+        "relative_difference": "0.004809750473316990693756248568"
+      },
+      {
+        "session_date": "2015-06-01",
+        "field": "Close",
+        "legacy": "29.236635208129883",
+        "candidate": "29.096012115478516",
+        "absolute_difference": "0.140623092651367",
+        "relative_difference": "0.004809824784907658841951845670"
+      },
+      {
+        "session_date": "2015-06-02",
+        "field": "Close",
+        "legacy": "29.10673141479492",
+        "candidate": "28.966733932495117",
+        "absolute_difference": "0.139997482299803",
+        "relative_difference": "0.004809797441860559843949649597"
+      },
+      {
+        "session_date": "2015-06-03",
+        "field": "Close",
+        "legacy": "29.14256477355957",
+        "candidate": "29.002395629882812",
+        "absolute_difference": "0.140169143676758",
+        "relative_difference": "0.004809773771316465828578307651"
+      },
+      {
+        "session_date": "2015-06-04",
+        "field": "Close",
+        "legacy": "28.97234344482422",
+        "candidate": "28.832992553710938",
+        "absolute_difference": "0.139350891113282",
+        "relative_difference": "0.004809790115137421356301295769"
+      },
+      {
+        "session_date": "2015-06-05",
+        "field": "Close",
+        "legacy": "28.81332778930664",
+        "candidate": "28.67474937438965",
+        "absolute_difference": "0.13857841491699",
+        "relative_difference": "0.004809524811931649916637446784"
+      },
+      {
+        "session_date": "2015-06-08",
+        "field": "Close",
+        "legacy": "28.62295913696289",
+        "candidate": "28.485292434692383",
+        "absolute_difference": "0.137666702270507",
+        "relative_difference": "0.004809660021934212443878596682"
+      },
+      {
+        "session_date": "2023-04-28",
+        "field": "Volume",
+        "legacy": "55209200",
+        "candidate": "55275900",
+        "absolute_difference": "66700",
+        "relative_difference": "0.001206674156368326883868014813"
+      },
+      {
+        "session_date": "2023-05-05",
+        "field": "Volume",
+        "legacy": "113316400",
+        "candidate": "113453200",
+        "absolute_difference": "136800",
+        "relative_difference": "0.001205783530125196997528496332"
+      },
+      {
+        "session_date": "2023-05-12",
+        "field": "Volume",
+        "legacy": "45497800",
+        "candidate": "45533100",
+        "absolute_difference": "35300",
+        "relative_difference": "0.0007752601953304299509587530829"
+      },
+      {
+        "session_date": "2023-05-19",
+        "field": "Volume",
+        "legacy": "55772400",
+        "candidate": "55809500",
+        "absolute_difference": "37100",
+        "relative_difference": "0.0006647613757514401669966582750"
+      },
+      {
+        "session_date": "2023-06-02",
+        "field": "Volume",
+        "legacy": "61945900",
+        "candidate": "61996900",
+        "absolute_difference": "51000",
+        "relative_difference": "0.0008226217762501028277220312629"
+      },
+      {
+        "session_date": "2023-06-09",
+        "field": "Volume",
+        "legacy": "48870700",
+        "candidate": "48900000",
+        "absolute_difference": "29300",
+        "relative_difference": "0.0005991820040899795501022494888"
+      },
+      {
+        "session_date": "2023-06-16",
+        "field": "Volume",
+        "legacy": "101235600",
+        "candidate": "101256200",
+        "absolute_difference": "20600",
+        "relative_difference": "0.0002034443322976765867176528450"
+      },
+      {
+        "session_date": "2023-06-23",
+        "field": "Volume",
+        "legacy": "53079300",
+        "candidate": "53117000",
+        "absolute_difference": "37700",
+        "relative_difference": "0.0007097539394167592296251670840"
+      },
+      {
+        "session_date": "2023-06-30",
+        "field": "Volume",
+        "legacy": "85069600",
+        "candidate": "85213200",
+        "absolute_difference": "143600",
+        "relative_difference": "0.001685184924401383823163547432"
+      },
+      {
+        "session_date": "2023-07-07",
+        "field": "Volume",
+        "legacy": "46778000",
+        "candidate": "46815000",
+        "absolute_difference": "37000",
+        "relative_difference": "0.0007903449749012068781373491402"
+      }
+    ]
+  },
+  "legacy_adjustment_conclusion": "legacy_adjustment_remains_unknown"
+}

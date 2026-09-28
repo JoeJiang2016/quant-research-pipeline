@@ -14,8 +14,6 @@ from backtest.strategy import fingerprint, load_strategy
 validate = validate_strategy
 def main(file):
     s=load_strategy(file); data_path=ROOT/"data"/(s["dataset_id"]+".csv"); bars=load_bars(data_path)
-    minimum = max(s["entry"]["lookback_bars"], s["exit"]["atr_period"]) + 2
-    if len(bars) < minimum: raise ValueError(f"insufficient history: need at least {minimum} bars")
     result=run(s,bars)
     try: commit=subprocess.check_output(["git","-c",f"safe.directory={ROOT}","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
     except Exception: commit="uncommitted"

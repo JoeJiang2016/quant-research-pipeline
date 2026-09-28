@@ -1,0 +1,16 @@
+strategy_id: mean_reversion_001
+strategy_version: "0.1.0"
+strategy_type: mean_reversion
+status: candidate
+dataset_id: mean_reversion_demo
+universe: [DEMO]
+timeframe: 1d
+description: Synthetic/test candidate for deterministic z-score mean reversion validation.
+execution: {signal_time: bar_close, fill_time: next_bar_open, order_type: market, commission_per_trade: 1.00, slippage_bps: 5}
+entry: {rule: zscore_mean_reversion, direction: long, mean_lookback: 5, entry_z: 1.5}
+exit: {stop_atr_multiple: 2.0, take_profit_atr_multiple: null, atr_period: 2, exit_z: 0.0, time_exit_bars: null, condition_exit: zscore_threshold}
+risk: {initial_equity: 100000, risk_per_trade_pct: 0.01}
+pyramiding: {enabled: false, max_entries: 1, scale_in_trigger_atr: null, scale_in_size_pct: 0}
+position_sizing: {method: risk_based, fixed_quantity: null}
+session: {policy: regular, rules: all_sessions}
+evaluation: {in_sample_end: "2024-01-06", out_of_sample_start: "2024-01-07", walk_forward: false}

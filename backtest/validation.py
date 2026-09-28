@@ -27,6 +27,7 @@ def validate_result(result):
         schema = json.loads((ROOT / "schemas" / "backtest_result.schema.json").read_text())
         schema["required"].append("strategy_fingerprint")
         schema["properties"]["strategy_fingerprint"] = {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        schema["properties"]["trade_log"]["items"]["properties"]["exit_reason"]["enum"].append("strategy_exit")
         validate_jsonschema(result, schema)
     except ValidationError as exc:
         raise ValueError("backtest result does not conform to schema") from exc

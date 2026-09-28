@@ -19,23 +19,31 @@ def run(strategy, bars):
     minimum = max(signal_logic.minimum_history(strategy), x["atr_period"]) + 2
     if len(bars) < minimum:
         raise ValueError(f"insufficient history: need at least {minimum} bars")
-    equity=r["initial_equity"]; cash=equity; position=None; pending=None; trades=[]; curve=[]; commissions=slippage=0.0
+    equity=r["initial_equity"]; cash=equity; position=None; pending=None; pending_exit=None; trades=[]; curve=[]; commissions=slippage=0.0
     for i, bar in enumerate(bars):
         exited_this_bar = False
+        if pending_exit == i and position is not None:
+            long=position["side"]=="long"; raw=bar["open"]; fill=_fill(raw,"sell" if long else "buy",ex["slippage_bps"])
+            pnl=(fill-position["entry"])*position["qty"]*(1 if long else -1); commission=ex["commission_per_trade"]; cash+=pnl-commission; equity=cash; commissions+=commission; slippage+=abs(fill-raw)*position["qty"]
+            trades.append({"signal_time":position["signal_time"],"entry_time":position["entry_time"],"exit_time":bar["timestamp"],"side":position["side"],"quantity":position["qty"],"entry_price":position["entry"],"exit_price":fill,"exit_reason":"strategy_exit","pnl":pnl-(2*commission),"commission":2*ex["commission_per_trade"]}); position=None; pending_exit=None; exited_this_bar=True
         # execute only the order scheduled from the previous completed bar.
         if pending and pending["execute_index"] == i and position is None:
             raw=bar["open"]; fill=_fill(raw, "buy" if e["direction"]=="long" else "sell", ex["slippage_bps"])
             risk_per_unit=pending["atr"] * x["stop_atr_multiple"]
             qty=max(1, math.floor((equity*r["risk_per_trade_pct"])/risk_per_unit))
-            position={"side":e["direction"],"qty":qty,"entry":fill,"entry_time":bar["timestamp"],"signal_time":pending["signal_time"],"stop":fill + (-1 if e["direction"]=="long" else 1)*risk_per_unit,"target":fill + (1 if e["direction"]=="long" else -1)*pending["atr"]*x["take_profit_atr_multiple"]}
+            target_multiple=x.get("take_profit_atr_multiple")
+            position={"side":e["direction"],"qty":qty,"entry":fill,"entry_time":bar["timestamp"],"signal_time":pending["signal_time"],"stop":fill + (-1 if e["direction"]=="long" else 1)*risk_per_unit,"target":None if target_multiple is None else fill + (1 if e["direction"]=="long" else -1)*pending["atr"]*target_multiple}
             commission=ex["commission_per_trade"]; cash-=commission; commissions+=commission; slippage+=abs(fill-raw)*qty; pending=None
         if position:
-            long=position["side"]=="long"; stop_hit=bar["low"]<=position["stop"] if long else bar["high"]>=position["stop"]; target_hit=bar["high"]>=position["target"] if long else bar["low"]<=position["target"]
+            long=position["side"]=="long"; stop_hit=bar["low"]<=position["stop"] if long else bar["high"]>=position["stop"]; target_hit=position["target"] is not None and (bar["high"]>=position["target"] if long else bar["low"]<=position["target"])
             # Conservative assumption: if both occur in one OHLC bar, stop fills first.
             if stop_hit or target_hit:
                 raw=position["stop"] if stop_hit else position["target"]; reason="stop" if stop_hit else "take_profit"; fill=_fill(raw, "sell" if long else "buy", ex["slippage_bps"])
                 pnl=(fill-position["entry"])*position["qty"]*(1 if long else -1); commission=ex["commission_per_trade"]; cash+=pnl-commission; equity=cash; commissions+=commission; slippage+=abs(fill-raw)*position["qty"]
                 trades.append({"signal_time":position["signal_time"],"entry_time":position["entry_time"],"exit_time":bar["timestamp"],"side":position["side"],"quantity":position["qty"],"entry_price":position["entry"],"exit_price":fill,"exit_reason":reason,"pnl":pnl-(2*commission),"commission":2*ex["commission_per_trade"]}); position=None; exited_this_bar = True
+        if position is not None and pending_exit is None and i+1 < len(bars):
+            exit_logic=getattr(signal_logic,"evaluate_exit",None)
+            if exit_logic and exit_logic(strategy,bars,i,position): pending_exit=i+1
         # Strategy logic only evaluates the close signal. The shared engine owns all state and execution.
         if position is None and pending is None and not exited_this_bar and i >= max(signal_logic.minimum_history(strategy), x["atr_period"]):
             a=atr(bars,i,x["atr_period"])

@@ -1,7 +1,7 @@
 """Fail-fast mapping from canonical strategy specs to signal logic."""
-from backtest.strategies import breakout, pullback
+from backtest.strategies import breakout, mean_reversion, pullback
 
-_IMPLEMENTATIONS = {"breakout": breakout, "close_breakout": breakout, "pullback_trend": pullback}
+_IMPLEMENTATIONS = {"breakout": breakout, "close_breakout": breakout, "pullback_trend": pullback, "mean_reversion": mean_reversion}
 
 
 def get_strategy_logic(strategy):

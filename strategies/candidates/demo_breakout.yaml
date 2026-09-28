@@ -1,5 +1,6 @@
 strategy_id: demo_20bar_breakout
 strategy_version: "1.0.0"
+status: candidate
 dataset_id: demo_ohlcv
 universe: [DEMO]
 timeframe: 1d

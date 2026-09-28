@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Deterministic strategy specification",
   "type": "object",
-  "required": ["strategy_id", "strategy_version", "dataset_id", "universe", "timeframe", "execution", "entry", "exit", "risk"],
+  "required": ["strategy_id", "strategy_version", "status", "dataset_id", "universe", "timeframe", "execution", "entry", "exit", "risk"],
   "properties": {
     "strategy_id": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
     "strategy_version": {"type": "string", "minLength": 1},
+    "status": {"const": "candidate", "description": "Only candidate strategies may enter the deterministic backtest pipeline."},
     "dataset_id": {"type": "string", "minLength": 1},
     "universe": {"type": "array", "items": {"type": "string"}, "minItems": 1},
     "timeframe": {"type": "string", "enum": ["1m", "5m", "15m", "1h", "1d"]},

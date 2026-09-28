@@ -1,0 +1,39 @@
+{
+  "entry_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "purpose": "Canonical repository entry point for Meta Muse research hypotheses expressed only as candidate strategy files.",
+  "strategy_schema_path": "schemas/strategy.schema.json",
+  "candidate_example_path": "strategies/candidates/demo_breakout.yaml",
+  "candidate_output_directory": "strategies/candidates",
+  "allowed_status": ["candidate"],
+  "required_output_format": {
+    "format": "YAML",
+    "schema": "schemas/strategy.schema.json",
+    "required_status": "candidate"
+  },
+  "constraints": {
+    "role": "Research / Hypothesis -> candidate strategy",
+    "workflow": [
+      "Muse produces a candidate strategy file.",
+      "The candidate is schema validated.",
+      "The deterministic backtest consumes the validated candidate.",
+      "Later systems, outside Muse, process the result."
+    ],
+    "prohibited_claims": [
+      "validated strategy",
+      "live-ready strategy"
+    ],
+    "prohibited_actions": [
+      "modify backtest results",
+      "modify risk approval",
+      "promote a strategy to production",
+      "issue trading instructions"
+    ],
+    "non_authoritative_fields": [
+      "backtest_result",
+      "risk_approval",
+      "promotion_decision",
+      "live_execution_instruction"
+    ]
+  }
+}

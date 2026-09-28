@@ -30,6 +30,10 @@ pytest -q
 
 Tests cover strategy/result schema validation, invalid parameters, causal execution, sizing, exits, conservative stop handling, fees/slippage, duplicate prevention, malformed or missing OHLCV data, insufficient history, zero trades, accounting consistency, and non-overlapping IS/OOS slices.
 
+## Meta Muse Integration
+
+Meta Muse has one canonical repository entry point: [`integration/muse_entry.json`](integration/muse_entry.json). In the future, provide Muse only the stable GitHub link to this repository and it can resolve the candidate schema, example, output directory, required `status: candidate`, and its limits from that file. Muse is limited to `Research / Hypothesis -> candidate strategy`; its candidate then proceeds to schema validation and deterministic backtesting. It cannot validate, approve, promote, alter results, or issue trading instructions.
+
 ## Future interfaces (not implemented)
 
 Meta Muse can write candidate YAML only. A future ChatGPT review can consume immutable result JSON and produce a separately schema-validated risk-policy proposal. A future execution adapter can consume an approved, signed strategy/result artifact; it must remain outside this research engine and retain independent hard risk controls.

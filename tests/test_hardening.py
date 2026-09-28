@@ -10,7 +10,7 @@ from backtest.validation import validate_result, validate_strategy
 
 
 BASE = {
-    "strategy_id": "test_breakout", "strategy_version": "1", "dataset_id": "test",
+    "strategy_id": "test_breakout", "strategy_version": "1", "status": "candidate", "dataset_id": "test",
     "universe": ["TEST"], "timeframe": "1d",
     "execution": {"signal_time": "bar_close", "fill_time": "next_bar_open", "order_type": "market", "commission_per_trade": 1, "slippage_bps": 0},
     "entry": {"rule": "close_breakout", "lookback_bars": 2, "direction": "long", "volume_multiplier": 0},
